@@ -1,0 +1,71 @@
+/* ============================================
+   GLOBAL STYLES - CUSTOMIZE COLORS & FONTS HERE
+   ============================================ */
+
+:root {
+  /* TO CHANGE FONT FAMILY: Change "Inter" to your preferred font (e.g., "Georgia", "Times New Roman", "Arial") */
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  /* TO CHANGE LINE SPACING: Change 1.5 to your preferred value (e.g., 1.2, 1.8) */
+  line-height: 1.5;
+  /* TO CHANGE DEFAULT FONT WEIGHT: Change 400 to 300 (light), 500 (medium), 700 (bold) */
+  font-weight: 400;
+  /* TO CHANGE DEFAULT TEXT COLOR: Change #212529 to your preferred hex color */
+  color: #212529;
+  /* TO CHANGE DEFAULT BACKGROUND COLOR: Change #f8f9fa to your preferred hex color */
+  background-color: #f8f9fa;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  /* TO CHANGE PAGE BACKGROUND COLOR: Change #f8f9fa to your preferred hex color */
+  background: #f8f9fa;
+}
+
+/* BUTTON FOCUS STYLES */
+button:focus,
+button:focus-visible {
+  /* TO CHANGE FOCUS OUTLINE COLOR: Change rgba(13, 110, 253, 0.4) - first 3 numbers are RGB, last is opacity (0-1) */
+  outline: 3px solid rgba(13, 110, 253, 0.4);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   MODAL STYLES - CUSTOMIZE COLORS & SIZES HERE
+   ============================================ */
+
+/* MODAL BACKDROP (the dark overlay behind the modal) */
+.custom-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  /* TO CHANGE BACKDROP COLOR/OPACITY: Change rgba(0, 0, 0, 0.45) 
+     - First 3 numbers (0, 0, 0) = black color, change to (255, 255, 255) for white
+     - Last number (0.45) = opacity, change to 0.3 (lighter) or 0.7 (darker) */
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px; /* TO CHANGE BACKDROP PADDING: Change this value */
+  z-index: 1050;
+}
+
+/* MODAL CONTENT BOX (the white box with product details) */
+.custom-modal-content {
+  /* TO CHANGE MODAL BACKGROUND COLOR: Change #fff to your preferred hex color */
+  background: #fff;
+  /* TO CHANGE MODAL CORNER RADIUS: Change 12px to your preferred value (e.g., 8px, 16px, 20px) */
+  border-radius: 12px;
+  /* TO CHANGE MODAL PADDING: Change 24px to your preferred value */
+  padding: 24px;
+  /* TO CHANGE MODAL MAX WIDTH: Change 900px to your preferred value (e.g., 800px, 1000px, 1200px) */
+  width: min(900px, 100%);
+  /* TO CHANGE MODAL MAX HEIGHT: Change 90vh to 80vh (smaller) or 95vh (larger) */
+  max-height: 90vh;
+  overflow-y: auto;
+  /* TO CHANGE MODAL SHADOW: Modify rgba(0, 0, 0, 0.15) - last number controls shadow intensity (0-1) */
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
