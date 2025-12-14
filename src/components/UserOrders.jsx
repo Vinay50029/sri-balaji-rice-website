@@ -11,15 +11,13 @@ export default function UserOrders({ user, onClose }) {
 
         const fetchOrders = async () => {
             try {
-                // Query orders for this user
-                console.log("Fetching orders for User ID:", user.id);
                 const q = query(
                     collection(db, "orders"),
                     where("userId", "==", user.id)
-                    // orderBy("createdAt", "desc") // Requires index, temporarily removing to fix empty list
+
                 );
                 const snapshot = await getDocs(q);
-                console.log("Found orders:", snapshot.size);
+
                 const userOrders = snapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
@@ -35,7 +33,7 @@ export default function UserOrders({ user, onClose }) {
         fetchOrders();
     }, [user]);
 
-    // Styles
+
     const modalOverlayStyle = {
         position: "fixed",
         top: 0,
@@ -121,9 +119,7 @@ export default function UserOrders({ user, onClose }) {
 
                 <div className="p-3 border-top text-end bg-light rounded-bottom">
                     <div className="d-flex justify-content-between align-items-center w-100">
-                        {/* <small className="text-muted" style={{ fontSize: '0.7rem' }}>
-                            Debug: UserID {user?.id ? user.id.slice(0, 8) : "No ID"}... | Orders: {orders.length}
-                        </small> */}
+
                         <button className="btn btn-secondary btn-sm" onClick={onClose}>Close</button>
                     </div>
                 </div>

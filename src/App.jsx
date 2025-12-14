@@ -39,6 +39,7 @@ function AppContent() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [showOrders, setShowOrders] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, loginWithGoogle, logout, setIsCartOpen, cartCount } = useCart();
 
   useEffect(() => {
@@ -109,26 +110,19 @@ function AppContent() {
       <CartDrawer />
       {showOrders && user && <UserOrders user={user} onClose={() => setShowOrders(false)} />}
       <div>
-        {/* ============================================
-          NAVBAR HEADER - CUSTOMIZE COLORS & TEXT HERE
-          ============================================ */}
         <header
           className="border-bottom bg-dark sticky-top"
           style={{ zIndex: 1000 }}
-        // TO CHANGE NAVBAR BACKGROUND COLOR: Change "bg-white" to "bg-dark", "bg-primary", etc.
-        // TO CHANGE NAVBAR BORDER COLOR: Change "border-bottom" or add style={{ borderBottom: "2px solid #yourcolor" }}
         >
           <div className="container-fluid px-3 py-2">
             <div className="row align-items-center g-2">
-              {/* LOGO AND COMPANY NAME SECTION */}
               <div className="col-12 col-md-auto">
                 <div className="d-flex align-items-center gap-2">
-                  {/* TO CHANGE LOGO: Replace "/logo.png" with your logo path */}
                   <img
                     src="/dlogo.png"
                     alt="Sri Balaji Traders Logo"
                     style={{
-                      height: "20px", // TO CHANGE LOGO SIZE: Change this value (e.g., "40px", "50px")
+                      height: "20px",
                       width: "auto",
                       objectFit: "contain",
                       display: "none",
@@ -141,40 +135,75 @@ function AppContent() {
                       e.target.style.display = "block";
                     }}
                   />
-                  <h1 className="h6 mb-0 fw-bold text-white" style={{ fontSize: "16px" }}>
+                  <h1 className="h6 mb-0 fw-bold text-white" style={{ fontSize: "16px", cursor: "pointer" }} onClick={() => navigate("/")}>
                     Sri Balaji Traders
                   </h1>
                 </div>
               </div>
-              {/* NAVIGATION BUTTONS AND CATEGORY SELECTOR */}
               <div className="col-12 col-md-auto ms-md-auto">
                 <div className="d-flex flex-column flex-md-row gap-2 align-items-stretch align-items-md-center">
-                  {/* CATEGORY DROPDOWN - Only shows on home page */}
                   {path === "/" && (
-                    <select
-                      className="form-select form-select-sm"
-                      style={{
-                        fontSize: "12px", // TO CHANGE DROPDOWN TEXT SIZE: Change this value
-                        minWidth: "140px" // TO CHANGE DROPDOWN WIDTH: Change this value
-                      }}
-                      value={selectedCategory}
-                      onChange={(e) => handleCategorySelect(e.target.value)}
+                    <div
+                      className="position-relative d-inline-block me-3"
+                      onMouseEnter={() => setIsDropdownOpen(true)}
+                      onMouseLeave={() => setIsDropdownOpen(false)}
                     >
-                      {/* TO CHANGE DROPDOWN PLACEHOLDER TEXT: Change "Select Category" below */}
-                      <option value="">Rice Categories</option>
-                      {categories.map((cat) => (
-                        <option key={cat.value} value={cat.value}>
-                          {cat.label}
-                        </option>
-                      ))}
-                    </select>
+                      <div
+                        className="form-select form-select-sm d-flex align-items-center justify-content-between"
+                        style={{
+                          fontSize: "12px",
+                          minWidth: "150px",
+                          cursor: "pointer",
+                          backgroundColor: "#fff"
+                        }}
+                      >
+                        <span className="text-truncate">
+                          Products
+                        </span>
+                      </div>
+
+                      {isDropdownOpen && (
+                        <div
+                          className="position-absolute start-0 bg-white border rounded shadow-sm py-1"
+                          style={{
+                            top: "100%",
+                            minWidth: "100%",
+                            zIndex: 1050,
+                            fontSize: "12px",
+                            maxHeight: "300px",
+                            overflowY: "auto"
+                          }}
+                        >
+                          <div
+                            className="dropdown-item px-3 py-2"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              handleCategorySelect("");
+                              setIsDropdownOpen(false);
+                            }}
+                          >
+                            Products
+                          </div>
+                          {categories.map((cat) => (
+                            <div
+                              key={cat.value}
+                              className={`dropdown-item px-3 py-2 ${selectedCategory === cat.value ? "active" : ""}`}
+                              style={{ cursor: "pointer" }}
+                              onClick={() => {
+                                handleCategorySelect(cat.value);
+                                setIsDropdownOpen(false);
+                              }}
+                            >
+                              {cat.label}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   )}
-                  {/* NAVIGATION BUTTONS */}
                   <div className="d-flex gap-2 flex-wrap">
 
-                    <button type="button" className={`btn btn-sm text-white ${path === "/" ? "btn-white border-white" : "btn-outline-primary border-size-0.1"}`}
-                      onClick={() => navigate("/")}
-                    >Home </button>
+
 
                     <button type="button" className={`btn btn-sm text-white ${path === "/other-products" ? "btn-white border-white" : "btn-outline-primary border-size-0.5"}`}
                       onClick={() => navigate("/other-products")}
@@ -184,14 +213,13 @@ function AppContent() {
                       onClick={() => navigate("/about")}
                     > About </button>
 
-                    {/* YOUTUBE BUTTON */}
                     <a
-                      href="https://www.youtube.com/@SriBalajiTraders1974" // TO CHANGE: Replace with your actual YouTube channel URL
+                      href="https://www.youtube.com/@SriBalajiTraders1974"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-sm text-white border-size-0.5"
                       style={{
-                        backgroundColor: "#000000ff", // YouTube Red
+                        backgroundColor: "#000000ff",
                         borderColor: "#FF0000",
                         display: "flex",
                         alignItems: "center",
@@ -210,12 +238,10 @@ function AppContent() {
           </div>
         </header>
 
-        {/* MAIN CONTENT - Added padding bottom to prevent footer overlap */}
         <div style={{ paddingBottom: "70px" }}>
           {content}
         </div>
 
-        {/* BOTTOM FOOTER NAVBAR */}
         <footer
           className="bg-dark d-flex gap-2 flex-wrap"
           style={{
@@ -266,16 +292,6 @@ function AppContent() {
                 <UserButton />
               </div>
             </SignedIn>
-            {/* <button
-              type="button"
-              className={`btn btn-sm text-white ${path === "/about" ? "fw-bold text-warning" : ""}`}
-              style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", background: "none", border: "none" }}
-              onClick={() => navigate("/about")}
-            >
-              <span stye={{ fontSize: "0.7rem" }}>About</span>
-            </button> */}
-
-
           </div>
         </footer>
       </div>

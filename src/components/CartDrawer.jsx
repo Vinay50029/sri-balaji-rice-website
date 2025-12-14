@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { db } from "../firebase";
 import { collection, addDoc, serverTimestamp, doc, getDoc, setDoc } from "firebase/firestore";
+import emailjs from '@emailjs/browser';
 
 export default function CartDrawer() {
     const {
@@ -24,7 +25,7 @@ export default function CartDrawer() {
     });
     const [isSecure, setIsSecure] = useState(window.isSecureContext);
 
-    // Fetch saved user details when user logs in
+
     useEffect(() => {
         if (user) {
             const fetchUserProfile = async () => {
@@ -40,7 +41,7 @@ export default function CartDrawer() {
                             address: data.address || ""
                         }));
                     } else {
-                        // Pre-fill name from auth if no profile exists
+
                         setCustomerDetails(prev => ({ ...prev, name: user.fullName || "" }));
                     }
                 } catch (error) {
@@ -49,7 +50,7 @@ export default function CartDrawer() {
             };
             fetchUserProfile();
         } else {
-            // Reset to empty if logged out
+
             setCustomerDetails({ name: "", phone: "", address: "" });
         }
     }, [user]);
@@ -88,17 +89,17 @@ export default function CartDrawer() {
     const handlePlaceOrder = async (e) => {
         e.preventDefault();
 
-        // Step 1: Force Login if not logged in
+
         if (!user) {
             const wantLogin = window.confirm("Please login with Google to place your order and track history.");
             if (wantLogin) {
                 try {
                     await loginWithGoogle();
-                } catch (e) { return; } // User cancelled login
+                } catch (e) { return; }
             } else {
-                return; // Cannot proceed without login as requested
+                return;
             }
-            return; // Stop here, let them click "Place Order" again after login updates state
+            return;
         }
 
         if (cartItems.length === 0) return;
@@ -127,7 +128,7 @@ export default function CartDrawer() {
 
             const docRef = await addDoc(collection(db, "orders"), orderData);
 
-            // Save/Update User Profile for future usage
+
             if (user) {
                 try {
                     await setDoc(doc(db, "users", user.id), {
@@ -142,11 +143,45 @@ export default function CartDrawer() {
                 }
             }
 
+
+            const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+            const TEMPLATE_ID_CUSTOMER = import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CUSTOMER;
+            const TEMPLATE_ID_ADMIN = import.meta.env.VITE_EMAILJS_TEMPLATE_ID_ADMIN;
+            const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+
+            const emailItems = orderData.items.map(item => ({
+                name: item.title,
+                price: item.price,
+                units: item.quantity,
+                unit_weight: item.unit
+            }));
+
+            const emailParams = {
+                order_id: docRef.id,
+                name: orderData.userInfo.name,
+                email: orderData.userInfo.email,
+                contact_number: orderData.userInfo.phoneNumber,
+                delivery_address: orderData.deliveryAddress,
+                total_amount: orderData.totalAmount,
+                items_summary: orderData.items.map(i => `${i.title} (${i.quantity} ${i.unit})`).join(', '),
+                order_date: new Date().toLocaleString(),
+                orders: emailItems
+            };
+
+
+            emailjs.send(SERVICE_ID, TEMPLATE_ID_CUSTOMER, emailParams, PUBLIC_KEY)
+                .then(() => console.log("Customer email sent successfully"))
+                .catch((err) => console.error("Failed to send customer email:", err));
+
+
+
+
+
             alert("Order placed successfully! We will contact you shortly.");
             clearCart();
             setIsCartOpen(false);
-            // Don't clear customerDetails here so they persist in session if they open cart again
-            // setCustomerDetails({ name: "", phone: "", address: "" });
+
         } catch (error) {
             console.error("Error placing order:", error);
             alert("Failed to place order. Please try again.");
@@ -155,7 +190,7 @@ export default function CartDrawer() {
         }
     };
 
-    // Styles
+
     const drawerStyle = {
         position: "fixed",
         top: 0,
@@ -184,12 +219,12 @@ export default function CartDrawer() {
 
     return (
         <>
-            {/* Backdrop */}
+
             <div style={backdropStyle} onClick={() => setIsCartOpen(false)} />
 
-            {/* Drawer */}
+
             <div style={drawerStyle}>
-                {/* Header */}
+
                 <div className="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
                     <h5 className="m-0">
                         Shopping Cart ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})
@@ -202,7 +237,7 @@ export default function CartDrawer() {
                     ></button>
                 </div>
 
-                {/* Body */}
+
                 <div className="flex-grow-1 overflow-auto p-3">
                     {cartItems.length === 0 ? (
                         <div className="text-center mt-5 text-muted">
@@ -218,7 +253,7 @@ export default function CartDrawer() {
                         <div className="d-flex flex-column gap-3">
                             {cartItems.map((item) => (
                                 <div key={item.id} className="d-flex align-items-start gap-2 border-bottom pb-2">
-                                    {/* Thumbnail */}
+
                                     <div
                                         style={{
                                             width: "60px",
@@ -242,7 +277,7 @@ export default function CartDrawer() {
                                         )}
                                     </div>
 
-                                    {/* Details */}
+
                                     <div className="flex-grow-1">
                                         <h6 className="mb-0 text-truncate" style={{ maxWidth: "180px" }}>
                                             {item.title}
@@ -269,7 +304,7 @@ export default function CartDrawer() {
                                         </div>
                                     </div>
 
-                                    {/* Remove */}
+
                                     <button
                                         className="btn btn-sm text-danger"
                                         onClick={() => removeFromCart(item.id)}
@@ -282,7 +317,7 @@ export default function CartDrawer() {
                     )}
                 </div>
 
-                {/* Footer */}
+
                 {cartItems.length > 0 && (
                     <div className="p-3 border-top bg-light">
                         <div className="d-flex justify-content-between mb-3 fw-bold font-size-16">
@@ -296,14 +331,9 @@ export default function CartDrawer() {
                             </div>
                         )}
 
-                        {/* {user && (
-                            <div className="mb-2 text-success small text-center">
-                                Logged in as {user.fullName}
-                            </div>
-                        )} */}
 
-                        {/* Checkout Form (Show if logged in OR if user wants to guest checkout - simplified to always show form but prefill if logged in) */}
-                        {/* Checkout Form - ONLY SHOW IF LOGGED IN */}
+
+
                         {user ? (
                             <form onSubmit={handlePlaceOrder} className="mt-3">
                                 <div className="mb-2">

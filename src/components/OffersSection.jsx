@@ -1,7 +1,3 @@
-// ============================================
-// OFFERS SECTION - CUSTOMIZE CONTENT HERE
-// ============================================
-
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
@@ -39,6 +35,21 @@ function OffersSection() {
         </div>
 
         <div className="row g-4 justify-content-center">
+
+          <div className="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div className="card h-100 shadow-sm border-0" style={{ background: "linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%)" }}>
+              <div className="card-body text-center p-4">
+                <div className="mb-3" style={{ fontSize: "3rem" }}>
+                  🎁
+                </div>
+                <h4 className="h5 fw-bold mb-2">Lucky Draw Offer</h4>
+                <p className="fw-bold text-primary small mb-3">Win Silver Coins! 🥇🥈🥉</p>
+                <p className="text-muted small mb-0">
+                  Buy a <strong>26kg Rice Bag</strong> to get a coupon. Draw on 1st of every month!
+                </p>
+              </div>
+            </div>
+          </div>
           {offers.map((offer) => (
             <div key={offer.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
               <div className={`card h-100 shadow-sm border-0 bg-${offer.color} bg-opacity-10`}>

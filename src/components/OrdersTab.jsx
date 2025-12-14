@@ -9,6 +9,7 @@ import {
     updateDoc,
     deleteDoc
 } from "firebase/firestore";
+import emailjs from '@emailjs/browser';
 
 export default function OrdersTab() {
     const [orders, setOrders] = useState([]);
@@ -17,7 +18,7 @@ export default function OrdersTab() {
     const audioContextRef = useRef(null);
     const isFirstLoad = useRef(true);
 
-    // Initialize Audio Context on user interaction (or lazy load)
+
     const playNotificationSound = () => {
         try {
             if (!audioContextRef.current) {
@@ -32,7 +33,7 @@ export default function OrdersTab() {
             const gainNode = ctx.createGain();
 
             oscillator.type = "sine";
-            oscillator.frequency.setValueAtTime(500, ctx.currentTime); // 500Hz beep
+            oscillator.frequency.setValueAtTime(500, ctx.currentTime);
             oscillator.frequency.exponentialRampToValueAtTime(1000, ctx.currentTime + 0.1);
 
             gainNode.gain.setValueAtTime(0.5, ctx.currentTime);
@@ -57,12 +58,12 @@ export default function OrdersTab() {
             }));
             setOrders(fetchedOrders);
 
-            // Play sound for new orders (skip on initial load)
+
             if (!isFirstLoad.current) {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
                         playNotificationSound();
-                        // Optional: Request browser notification permissions?
+
                     }
                 });
             }
@@ -76,6 +77,30 @@ export default function OrdersTab() {
     const handleStatusUpdate = async (orderId, newStatus) => {
         try {
             await updateDoc(doc(db, "orders", orderId), { status: newStatus });
+
+
+            const order = orders.find(o => o.id === orderId);
+            if (order && order.userInfo?.email) {
+                const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+                const TEMPLATE_ID_CUSTOMER = import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CUSTOMER;
+                const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+                const emailParams = {
+                    order_id: orderId,
+                    to_name: order.userInfo.name,
+                    to_email: order.userInfo.email,
+                    message: `Your order status has been updated to: ${newStatus.toUpperCase()}`,
+                    total_amount: order.totalAmount,
+
+                    items_summary: `Status Update: ${newStatus.toUpperCase()}`,
+                    order_date: new Date().toLocaleString()
+                };
+
+                emailjs.send(SERVICE_ID, TEMPLATE_ID_CUSTOMER, emailParams, PUBLIC_KEY)
+                    .then(() => console.log("Status update email sent"))
+                    .catch((err) => console.error("Failed to send status email:", err));
+            }
+
         } catch (error) {
             console.error("Error updating status:", error);
             alert("Failed to update status");
@@ -93,7 +118,7 @@ export default function OrdersTab() {
 
     const formatDate = (timestamp) => {
         if (!timestamp) return "";
-        // Handle Firestore Timestamp or JS Date
+
         const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
         return date.toLocaleString();
     };
