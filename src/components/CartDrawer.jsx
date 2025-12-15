@@ -21,7 +21,12 @@ export default function CartDrawer() {
     const [customerDetails, setCustomerDetails] = useState({
         name: "",
         phone: "",
-        address: "",
+        houseNo: "",
+        street: "",
+        landmark: "",
+        mapsLink: "",
+        latitude: null,
+        longitude: null
     });
     const [isSecure, setIsSecure] = useState(window.isSecureContext);
 
@@ -34,14 +39,17 @@ export default function CartDrawer() {
                     const userSnap = await getDoc(userDocRef);
                     if (userSnap.exists()) {
                         const data = userSnap.data();
+
                         setCustomerDetails(prev => ({
                             ...prev,
                             name: data.name || user.fullName || "",
                             phone: data.phoneNumber || "",
-                            address: data.address || ""
+                            houseNo: data.houseNo || "",
+                            street: data.street || data.address || "",
+                            landmark: data.landmark || "",
+                            mapsLink: data.mapsLink || ""
                         }));
                     } else {
-
                         setCustomerDetails(prev => ({ ...prev, name: user.fullName || "" }));
                     }
                 } catch (error) {
@@ -50,10 +58,20 @@ export default function CartDrawer() {
             };
             fetchUserProfile();
         } else {
-
-            setCustomerDetails({ name: "", phone: "", address: "" });
+            setCustomerDetails({ name: "", phone: "", houseNo: "", street: "", landmark: "", mapsLink: "" });
         }
     }, [user]);
+
+    useEffect(() => {
+        if (isCartOpen) {
+            setCustomerDetails(prev => ({
+                ...prev,
+                mapsLink: "",
+                latitude: null,
+                longitude: null
+            }));
+        }
+    }, [isCartOpen]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -69,10 +87,11 @@ export default function CartDrawer() {
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const { latitude, longitude } = position.coords;
-                const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
                 setCustomerDetails(prev => ({
                     ...prev,
-                    address: `Lat: ${latitude}, Long: ${longitude}\nMaps: ${mapsLink}\n(Add more details...)`
+                    latitude: latitude,
+                    longitude: longitude,
+                    mapsLink: `https://www.google.com/maps?q=${latitude},${longitude}`
                 }));
             },
             (error) => {
@@ -86,69 +105,90 @@ export default function CartDrawer() {
         );
     };
 
-    const handlePlaceOrder = async (e) => {
-        e.preventDefault();
 
 
-        if (!user) {
-            const wantLogin = window.confirm("Please login with Google to place your order and track history.");
-            if (wantLogin) {
-                try {
-                    await loginWithGoogle();
-                } catch (e) { return; }
-            } else {
-                return;
-            }
-            return;
+
+    const SHOP_COORDINATES = { lat: 17.48601821127715, lng: 78.55582850296089 };
+    const [deliveryFee, setDeliveryFee] = useState(0);
+
+    // Calculate distance using Haversine formula
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+        const R = 6371; // Radius of the earth in km
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const d = R * c; // Distance in km
+        return d;
+    };
+
+    const deg2rad = (deg) => {
+        return deg * (Math.PI / 180);
+    };
+
+    useEffect(() => {
+        let fee = 0;
+
+        // 1. Bulk Order Charges
+        const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+        if (totalItems > 2) {
+            fee += 50; // Auto/Transport charge for bulk
         }
 
-        if (cartItems.length === 0) return;
+        // 2. Distance Charges
+        if (customerDetails.latitude && customerDetails.longitude) {
+            const dist = calculateDistance(
+                SHOP_COORDINATES.lat,
+                SHOP_COORDINATES.lng,
+                customerDetails.latitude,
+                customerDetails.longitude
+            );
 
+            if (dist > 10) {
+                const extraKm = Math.ceil(dist - 10);
+                fee += extraKm * 15; // Rs. 15 per extra km
+            }
+        }
+
+        setDeliveryFee(fee);
+    }, [cartItems, customerDetails.latitude, customerDetails.longitude]);
+
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
+    const [showTermsModal, setShowTermsModal] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [lastOrder, setLastOrder] = useState(null);
+    const [locationError, setLocationError] = useState("");
+    const OWNER_PHONE = import.meta.env.VITE_OWNER_PHONE; // REPLACE WITH ACTUAL OWNER NUMBER
+
+    const finalizeOrder = async (orderData) => {
         setIsPlacingOrder(true);
         try {
-            const orderData = {
-                userId: user ? user.id : null,
-                userInfo: {
-                    name: customerDetails.name || (user?.fullName || "Guest"),
-                    email: user?.primaryEmailAddress?.emailAddress || "",
-                    phoneNumber: customerDetails.phone,
-                },
-                deliveryAddress: customerDetails.address,
-                items: cartItems.map((item) => ({
-                    id: item.id,
-                    title: item.title,
-                    price: Number(item.price),
-                    quantity: item.quantity,
-                    unit: item.weight || "unit",
-                })),
-                totalAmount: cartTotal,
-                status: "pending",
-                createdAt: serverTimestamp(),
-            };
-
             const docRef = await addDoc(collection(db, "orders"), orderData);
-
 
             if (user) {
                 try {
                     await setDoc(doc(db, "users", user.id), {
                         name: customerDetails.name,
                         phoneNumber: customerDetails.phone,
-                        address: customerDetails.address,
+                        houseNo: customerDetails.houseNo,
+                        street: customerDetails.street,
+                        landmark: customerDetails.landmark,
+                        mapsLink: customerDetails.mapsLink,
+                        address: orderData.deliveryAddress,
                         updatedAt: serverTimestamp()
                     }, { merge: true });
                 } catch (saveError) {
                     console.error("Failed to save user profile:", saveError);
-                    // Don't block the order success even if profile save fails
                 }
             }
-
 
             const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
             const TEMPLATE_ID_CUSTOMER = import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CUSTOMER;
             const TEMPLATE_ID_ADMIN = import.meta.env.VITE_EMAILJS_TEMPLATE_ID_ADMIN;
             const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-
 
             const emailItems = orderData.items.map(item => ({
                 name: item.title,
@@ -166,19 +206,28 @@ export default function CartDrawer() {
                 total_amount: orderData.totalAmount,
                 items_summary: orderData.items.map(i => `${i.title} (${i.quantity} ${i.unit})`).join(', '),
                 order_date: new Date().toLocaleString(),
+                payment_mode: orderData.paymentMode, // Add payment mode to email
                 orders: emailItems
             };
-
 
             emailjs.send(SERVICE_ID, TEMPLATE_ID_CUSTOMER, emailParams, PUBLIC_KEY)
                 .then(() => console.log("Customer email sent successfully"))
                 .catch((err) => console.error("Failed to send customer email:", err));
 
+            if (TEMPLATE_ID_ADMIN) {
+                emailjs.send(SERVICE_ID, TEMPLATE_ID_ADMIN, emailParams, PUBLIC_KEY)
+                    .then(() => console.log("Admin email sent successfully"))
+                    .catch((err) => console.error("Failed to send admin email:", err));
+            }
 
-
-
-
-            alert("Order placed successfully! We will contact you shortly.");
+            setLastOrder({
+                id: docRef.id,
+                total: orderData.totalAmount,
+                items: orderData.items,
+                address: orderData.deliveryAddress,
+                name: orderData.userInfo.name
+            });
+            setShowSuccessModal(true);
             clearCart();
             setIsCartOpen(false);
 
@@ -188,6 +237,59 @@ export default function CartDrawer() {
         } finally {
             setIsPlacingOrder(false);
         }
+    };
+
+    const handlePlaceOrder = async (e) => {
+        e.preventDefault();
+
+        if (!user) {
+            const wantLogin = window.confirm("Please login check ordering.");
+            if (wantLogin) {
+                try { await loginWithGoogle(); } catch (e) { return; }
+            }
+            return;
+        }
+
+        if (cartItems.length === 0) return;
+
+        if (!customerDetails.mapsLink) {
+            setLocationError("Please click 'Get Current Location' to set delivery address.");
+            return;
+        } else {
+            setLocationError("");
+        }
+
+        // Construct readable address
+        const fullAddress = `
+${customerDetails.houseNo ? `H.No: ${customerDetails.houseNo}` : ''}
+${customerDetails.street}
+${customerDetails.landmark ? `Landmark: ${customerDetails.landmark}` : ''}
+${customerDetails.mapsLink ? `📍 Maps: ${customerDetails.mapsLink}` : ''}
+        `.trim();
+
+        const orderData = {
+            userId: user ? user.id : null,
+            userInfo: {
+                name: customerDetails.name || (user?.fullName || "Guest"),
+                email: user?.primaryEmailAddress?.emailAddress || "",
+                phoneNumber: customerDetails.phone,
+            },
+            deliveryAddress: fullAddress,
+            items: cartItems.map((item) => ({
+                id: item.id,
+                title: item.title,
+                price: Number(item.price),
+                quantity: item.quantity,
+                unit: item.weight || "unit",
+            })),
+            deliveryFee: deliveryFee,
+            totalAmount: cartTotal + deliveryFee,
+            status: "pending",
+            paymentMode: "COD",
+            createdAt: serverTimestamp(),
+        };
+
+        finalizeOrder(orderData);
     };
 
 
@@ -315,100 +417,240 @@ export default function CartDrawer() {
                             ))}
                         </div>
                     )}
-                </div>
 
-
-                {cartItems.length > 0 && (
-                    <div className="p-3 border-top bg-light">
-                        <div className="d-flex justify-content-between mb-3 fw-bold font-size-16">
-                            <span>Total:</span>
-                            <span>₹{cartTotal}</span>
-                        </div>
-
-                        {!user && (
-                            <div className="alert alert-info py-2 small mb-2">
-                                Login will be required to place order.
+                    {cartItems.length > 0 && (
+                        <div className="mt-4 pt-3 border-top">
+                            <div className="d-flex justify-content-between mb-2">
+                                <span className="fw-bold fs-5">Subtotal:</span>
+                                <span className="fw-bold fs-5">₹{cartTotal}</span>
                             </div>
-                        )}
-
-
-
-
-                        {user ? (
-                            <form onSubmit={handlePlaceOrder} className="mt-3">
-                                <div className="mb-2">
-                                    <label className="form-label small fw-bold mb-1">Name</label>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        className="form-control form-control-sm"
-                                        placeholder="Full Name"
-                                        required
-                                        value={customerDetails.name}
-                                        onChange={handleInputChange}
-                                        defaultValue={user?.fullName || ""}
-                                    />
+                            {deliveryFee > 0 && (
+                                <div className="d-flex justify-content-between mb-2 text-danger">
+                                    <span className="small">Delivery Charges:</span>
+                                    <span className="small">+₹{deliveryFee}</span>
                                 </div>
-                                <div className="mb-2">
-                                    <label className="form-label small fw-bold mb-1">Phone Number</label>
-                                    <input
-                                        type="tel"
-                                        name="phone"
-                                        className="form-control form-control-sm"
-                                        placeholder="+91"
-                                        required
-                                        value={customerDetails.phone}
-                                        onChange={handleInputChange}
-                                    />
+                            )}
+                            <div className="d-flex justify-content-between mb-4 border-top pt-2">
+                                <span className="fw-bold fs-4">Total:</span>
+                                <span className="fw-bold fs-4">₹{cartTotal + deliveryFee}</span>
+                            </div>
+
+                            {!user && (
+                                <div className="alert alert-info py-2 small mb-2">
+                                    Login will be required to place order.
                                 </div>
-                                <div className="mb-2">
-                                    <label className="form-label small fw-bold mb-1">Delivery Address</label>
-                                    <div className="input-group input-group-sm mb-1">
-                                        <button
-                                            type="button"
-                                            className={`btn ${isSecure ? "btn-outline-secondary" : "btn-secondary"}`}
-                                            onClick={handleGetLocation}
-                                            title={isSecure ? "Use Current Location" : "Location requires HTTPS"}
-                                            disabled={!isSecure}
-                                        >
-                                            {isSecure ? "Use Current Location" : "⚠️ Location Unavailable (HTTPS Required)"}
-                                        </button>
+                            )}
+
+
+
+
+                            {user ? (
+                                <form onSubmit={handlePlaceOrder} className="mt-3">
+                                    <div className="mb-2">
+                                        <label className="form-label small fw-bold mb-1">Name</label>
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            className="form-control form-control-sm"
+                                            placeholder="Full Name"
+                                            required
+                                            value={customerDetails.name}
+                                            onChange={handleInputChange}
+                                        />
                                     </div>
-                                    <textarea
-                                        name="address"
-                                        className="form-control form-control-sm"
-                                        placeholder="House No, Street, Landmark..."
-                                        rows="2"
-                                        required
-                                        value={customerDetails.address}
-                                        onChange={handleInputChange}
-                                    ></textarea>
+                                    <div className="mb-2">
+                                        <label className="form-label small fw-bold mb-1">Phone Number</label>
+                                        <input
+                                            type="tel"
+                                            name="phone"
+                                            className="form-control form-control-sm"
+                                            placeholder="+91"
+                                            required
+                                            value={customerDetails.phone}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="mb-2">
+                                        <label className="form-label small fw-bold mb-1">House / Flat No.</label>
+                                        <input
+                                            type="text"
+                                            name="houseNo"
+                                            className="form-control form-control-sm"
+                                            placeholder="e.g. 102, 1st Floor"
+                                            value={customerDetails.houseNo}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="mb-2">
+                                        <label className="form-label small fw-bold mb-1">Street / Area / Colony <span className="text-danger">*</span></label>
+                                        <textarea
+                                            name="street"
+                                            className="form-control form-control-sm"
+                                            placeholder="Main Road, Near Temple..."
+                                            rows="2"
+                                            required
+                                            value={customerDetails.street}
+                                            onChange={handleInputChange}
+                                        ></textarea>
+                                    </div>
+                                    <div className="mb-2">
+                                        <label className="form-label small fw-bold mb-1">Landmark</label>
+                                        <input
+                                            type="text"
+                                            name="landmark"
+                                            className="form-control form-control-sm"
+                                            placeholder="Opposite Post Office"
+                                            value={customerDetails.landmark}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                    <div className="mb-2">
+                                        <div className="d-flex justify-content-between align-items-center mb-1">
+                                            <label className="form-label small fw-bold m-0">Location Link <span className="text-danger">*</span></label>
+                                            <button
+                                                type="button"
+                                                className={`btn btn-sm p-0 text-decoration-none ${isSecure ? "text-primary" : "text-muted"}`}
+                                                onClick={handleGetLocation}
+                                                title={isSecure ? "Use Current Location" : "Location requires HTTPS"}
+                                                disabled={!isSecure}
+                                                style={{ fontSize: "0.8rem" }}
+                                            >
+                                                {isSecure ? "📍 Get Current Location" : "⚠️ Location Unavailable"}
+                                            </button>
+                                        </div>
+                                        <input
+                                            type="text"
+                                            name="mapsLink"
+                                            className="form-control form-control-sm bg-light text-muted"
+                                            placeholder="Click button to fetch location"
+                                            value={customerDetails.mapsLink}
+                                            readOnly
+                                            required
+                                        />
+                                        {locationError && <div className="text-danger small mt-1">{locationError}</div>}
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label small fw-bold mb-1">Payment Method</label>
+                                        <div className="form-check">
+                                            <input
+                                                className="form-check-input"
+                                                type="radio"
+                                                name="paymentMethod"
+                                                id="paymentCOD"
+                                                checked
+                                                disabled
+                                            />
+                                            <label className="form-check-label small" htmlFor="paymentCOD">
+                                                Cash on Delivery
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div className="mb-3 form-check">
+                                        <input
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            id="termsCheck"
+                                            checked={acceptedTerms}
+                                            onChange={(e) => setAcceptedTerms(e.target.checked)}
+                                        />
+                                        <label className="form-check-label small text-muted" htmlFor="termsCheck">
+                                            I agree to the <span className="text-primary text-decoration-underline" style={{ cursor: "pointer" }} onClick={() => setShowTermsModal(true)}>Terms & Conditions</span>
+                                        </label>
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        className="btn btn-success w-100"
+                                        disabled={isPlacingOrder || !acceptedTerms}
+                                        style={{ borderRadius: "20px", fontWeight: "bold" }}
+                                    >
+                                        {isPlacingOrder ? "Placing Order..." : "Place Order"}
+                                    </button>
+                                </form>
+                            ) : (
+                                <div className="mt-3 text-center">
+                                    <p className="small text-muted mb-2">Please login to enter your delivery details.</p>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary w-100"
+                                        onClick={loginWithGoogle}
+                                        style={{ borderRadius: "20px", fontWeight: "bold" }}
+                                    >
+                                        Login to Checkout
+                                    </button>
                                 </div>
-                                <button
-                                    type="submit"
-                                    className="btn btn-success w-100"
-                                    disabled={isPlacingOrder}
-                                    style={{ borderRadius: "20px", fontWeight: "bold" }}
-                                >
-                                    {isPlacingOrder ? "Placing Order..." : "Place Order"}
-                                </button>
-                            </form>
-                        ) : (
-                            <div className="mt-3 text-center">
-                                <p className="small text-muted mb-2">Please login to enter your delivery details.</p>
-                                <button
-                                    type="button"
-                                    className="btn btn-primary w-100"
-                                    onClick={loginWithGoogle}
-                                    style={{ borderRadius: "20px", fontWeight: "bold" }}
-                                >
-                                    Login to Checkout
-                                </button>
-                            </div>
-                        )}
+                            )}
+                        </div >
+                    )
+                    }
+                </div >
+            </div >
+            {showTermsModal && (
+                <div style={{
+                    position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
+                    backgroundColor: "rgba(0,0,0,0.6)", zIndex: 1100, display: "flex", justifyContent: "center", alignItems: "center"
+                }}>
+                    <div className="bg-white p-4 rounded shadow-lg" style={{ width: "90%", maxWidth: "500px", maxHeight: "80vh", overflowY: "auto" }}>
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                            <h5 className="fw-bold m-0">Terms & Conditions</h5>
+                            <button className="btn-close" onClick={() => setShowTermsModal(false)}></button>
+                        </div>
+                        <div className="text-muted small">
+                            <p><strong>1. General</strong><br />By placing an order with Sri Balaji Traders, you agree to these terms.</p>
+                            <p><strong>2. Pricing & Availability</strong><br />Prices are subject to change without notice. Rice varieties and availability may vary based on season.</p>
+                            <p><strong>3. Delivery</strong><br />We strive to deliver within the estimated time, but delays may occur due to traffic or weather conditions.</p>
+                            <p><strong>4. Returns & Refunds</strong><br />Please inspect your order upon delivery. Returns are accepted only for damaged or incorrect items reported immediately within 12 hours of delivery.</p>
+                            <p><strong>5. Privacy</strong><br />Your personal details are used solely for order processing and delivery.</p>
+                            <p><strong>6. Cancellation Policy</strong><br />If an order is rejected or cancelled at the time of delivery (doorstep), a cancellation fee of ₹15 may be charged.</p>
+                            <p><strong>7. Bulk Orders</strong><br />Orders containing more than 2 bags might incur a delivery fee to cover auto/transport charges.</p>
+                            <p><strong>8. Delivery Distance</strong><br />Free delivery is available within a 10km radius. Locations beyond 10km may be subject to additional distance-based delivery charges.</p>
+                        </div>
+                        <button className="btn btn-primary w-100 mt-3" onClick={() => { setAcceptedTerms(true); setShowTermsModal(false); }}>
+                            I Understand & Agree
+                        </button>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
+            {showSuccessModal && (
+                <div style={{
+                    position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
+                    backgroundColor: "rgba(0,0,0,0.6)", zIndex: 1100, display: "flex", justifyContent: "center", alignItems: "center"
+                }}>
+                    <div className="bg-white p-4 rounded shadow-lg text-center" style={{ width: "90%", maxWidth: "400px" }}>
+                        <div className="mb-3">
+                            <h2 className="text-success display-1">✅</h2>
+                            <h4 className="fw-bold">Order Placed!</h4>
+                            <p className="text-muted small">Your order has been successfully recorded.</p>
+                        </div>
+                        <div className="d-grid gap-2">
+                            <button
+                                className="btn btn-success fw-bold py-2"
+                                onClick={() => {
+                                    if (!lastOrder) return;
+                                    const message = `*New Order Placed!* 🍚\n\n` +
+                                        `Order ID: ${lastOrder.id}\n` +
+                                        `Name: ${lastOrder.name}\n` +
+                                        `Total Amount: ₹${lastOrder.total}\n` +
+                                        `Address: ${lastOrder.address}\n\n` +
+                                        `Items:\n` +
+                                        lastOrder.items.map(i => `- ${i.title} (${i.quantity} ${i.unit})`).join('\n');
+
+                                    const url = `https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(message)}`;
+                                    window.open(url, '_blank');
+                                }}
+                            >
+                                <span className="me-2">📱</span> Send to WhatsApp
+                            </button>
+                            <button
+                                className="btn btn-outline-secondary"
+                                onClick={() => setShowSuccessModal(false)}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }

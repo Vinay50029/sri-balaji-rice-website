@@ -8,6 +8,7 @@ import About from "./About";
 import { CartProvider, useCart } from "./context/CartContext";
 import CartDrawer from "./components/CartDrawer";
 import UserOrders from "./components/UserOrders";
+import ScrollToTop from "./components/ScrollToTop";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 
 // ============================================
@@ -108,6 +109,7 @@ function AppContent() {
   return (
     <>
       <CartDrawer />
+      <ScrollToTop />
       {showOrders && user && <UserOrders user={user} onClose={() => setShowOrders(false)} />}
       <div>
         <header
