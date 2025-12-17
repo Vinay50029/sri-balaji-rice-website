@@ -3,6 +3,7 @@ import { useCart } from "../context/CartContext";
 import { db } from "../firebase";
 import { collection, addDoc, serverTimestamp, doc, getDoc, setDoc } from "firebase/firestore";
 import emailjs from '@emailjs/browser';
+import { DELIVERY_FEE, OWNER_PHONE, SHOP_COORDINATES, ORDER_STATUS } from "../utils/constants";
 
 export default function CartDrawer() {
     const {
@@ -108,12 +109,10 @@ export default function CartDrawer() {
 
 
 
-    const SHOP_COORDINATES = { lat: 17.48601821127715, lng: 78.55582850296089 };
     const [deliveryFee, setDeliveryFee] = useState(0);
 
-    // Calculate distance using Haversine formula
     const calculateDistance = (lat1, lon1, lat2, lon2) => {
-        const R = 6371; // Radius of the earth in km
+        const R = 6371;
         const dLat = deg2rad(lat2 - lat1);
         const dLon = deg2rad(lon2 - lon1);
         const a =
@@ -121,7 +120,7 @@ export default function CartDrawer() {
             Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
             Math.sin(dLon / 2) * Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        const d = R * c; // Distance in km
+        const d = R * c;
         return d;
     };
 
@@ -132,13 +131,6 @@ export default function CartDrawer() {
     useEffect(() => {
         let fee = 0;
 
-        // 1. Bulk Order Charges
-        const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-        if (totalItems > 2) {
-            fee += 50; // Auto/Transport charge for bulk
-        }
-
-        // 2. Distance Charges
         if (customerDetails.latitude && customerDetails.longitude) {
             const dist = calculateDistance(
                 SHOP_COORDINATES.lat,
@@ -149,7 +141,7 @@ export default function CartDrawer() {
 
             if (dist > 10) {
                 const extraKm = Math.ceil(dist - 10);
-                fee += extraKm * 15; // Rs. 15 per extra km
+                fee += extraKm * DELIVERY_FEE;
             }
         }
 
@@ -161,7 +153,6 @@ export default function CartDrawer() {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [lastOrder, setLastOrder] = useState(null);
     const [locationError, setLocationError] = useState("");
-    const OWNER_PHONE = import.meta.env.VITE_OWNER_PHONE; // REPLACE WITH ACTUAL OWNER NUMBER
 
     const finalizeOrder = async (orderData) => {
         setIsPlacingOrder(true);
@@ -206,7 +197,7 @@ export default function CartDrawer() {
                 total_amount: orderData.totalAmount,
                 items_summary: orderData.items.map(i => `${i.title} (${i.quantity} ${i.unit})`).join(', '),
                 order_date: new Date().toLocaleString(),
-                payment_mode: orderData.paymentMode, // Add payment mode to email
+                payment_mode: orderData.paymentMode,
                 orders: emailItems
             };
 
@@ -284,7 +275,7 @@ ${customerDetails.mapsLink ? `📍 Maps: ${customerDetails.mapsLink}` : ''}
             })),
             deliveryFee: deliveryFee,
             totalAmount: cartTotal + deliveryFee,
-            status: "pending",
+            status: ORDER_STATUS.PENDING,
             paymentMode: "COD",
             createdAt: serverTimestamp(),
         };
@@ -303,7 +294,7 @@ ${customerDetails.mapsLink ? `📍 Maps: ${customerDetails.mapsLink}` : ''}
         backgroundColor: "#fff",
         boxShadow: "-2px 0 5px rgba(0,0,0,0.1)",
         transition: "right 0.3s ease-in-out",
-        zIndex: 1050,
+        zIndex: 1200,
         display: "flex",
         flexDirection: "column",
     };
@@ -315,7 +306,7 @@ ${customerDetails.mapsLink ? `📍 Maps: ${customerDetails.mapsLink}` : ''}
         width: "100%",
         height: "100%",
         backgroundColor: "rgba(0,0,0,0.5)",
-        zIndex: 1040,
+        zIndex: 1150,
         display: isCartOpen ? "block" : "none",
     };
 
@@ -328,9 +319,20 @@ ${customerDetails.mapsLink ? `📍 Maps: ${customerDetails.mapsLink}` : ''}
             <div style={drawerStyle}>
 
                 <div className="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
-                    <h5 className="m-0">
-                        Shopping Cart ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})
-                    </h5>
+                    <div className="d-flex align-items-center">
+                        <button
+                            className="btn btn-sm btn-link text-dark p-0 me-2 d-flex align-items-center"
+                            onClick={() => setIsCartOpen(false)}
+                            aria-label="Back"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path fillRule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+                            </svg>
+                        </button>
+                        <h5 className="m-0">
+                            Shopping Cart ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})
+                        </h5>
+                    </div>
                     <button
                         type="button"
                         className="btn-close"
@@ -560,7 +562,7 @@ ${customerDetails.mapsLink ? `📍 Maps: ${customerDetails.mapsLink}` : ''}
 
                                     <button
                                         type="submit"
-                                        className="btn btn-success w-100"
+                                        className="btn btn-primary w-100"
                                         disabled={isPlacingOrder || !acceptedTerms}
                                         style={{ borderRadius: "20px", fontWeight: "bold" }}
                                     >
@@ -627,7 +629,7 @@ ${customerDetails.mapsLink ? `📍 Maps: ${customerDetails.mapsLink}` : ''}
                                 className="btn btn-success fw-bold py-2"
                                 onClick={() => {
                                     if (!lastOrder) return;
-                                    const message = `*New Order Placed!* 🍚\n\n` +
+                                    const message = `*New Order Placed!*🍚\n\n` +
                                         `Order ID: ${lastOrder.id}\n` +
                                         `Name: ${lastOrder.name}\n` +
                                         `Total Amount: ₹${lastOrder.total}\n` +
@@ -637,15 +639,10 @@ ${customerDetails.mapsLink ? `📍 Maps: ${customerDetails.mapsLink}` : ''}
 
                                     const url = `https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(message)}`;
                                     window.open(url, '_blank');
+                                    setShowSuccessModal(false);
                                 }}
                             >
                                 <span className="me-2">📱</span> Send to WhatsApp
-                            </button>
-                            <button
-                                className="btn btn-outline-secondary"
-                                onClick={() => setShowSuccessModal(false)}
-                            >
-                                Close
                             </button>
                         </div>
                     </div>

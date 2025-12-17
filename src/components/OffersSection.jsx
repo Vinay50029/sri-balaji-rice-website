@@ -27,23 +27,23 @@ function OffersSection() {
   }
 
   return (
-    <section className="py-5 bg-light">
+    <section className="py-3 bg-light">
       <div className="container">
         <div className="text-center mb-4">
-          <h2 className="display-6 fw-bold mb-2">Special Offers</h2>
-          <p className="text-muted">Exclusive deals and rewards for our valued customers</p>
+          <h2 className="h5 fw-bold text-uppercase text-muted mb-2" style={{ letterSpacing: '2px' }}>Special Offers</h2>
+          <p className="text-muted small">Exclusive deals and rewards for our valued customers</p>
         </div>
 
         <div className="row g-4 justify-content-center">
 
           <div className="col-12 col-sm-6 col-md-4 col-lg-3">
-            <div className="card h-100 shadow-sm border-0" style={{ background: "linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%)" }}>
-              <div className="card-body text-center p-4">
+            <div className="sbt-card h-100" style={{ background: "linear-gradient(135deg, #fff3e0 0%, #fff8e1 100%)", border: '1px solid var(--color-secondary-light)' }}>
+              <div className="card-body text-center p-4 d-flex flex-column justify-content-center">
                 <div className="mb-3" style={{ fontSize: "3rem" }}>
-                  🎁
+                  <span className="icon-animate">🎁</span>
                 </div>
-                <h4 className="h5 fw-bold mb-2">Lucky Draw Offer</h4>
-                <p className="fw-bold text-primary small mb-3">Win Silver Coins! 🥇🥈🥉</p>
+                <h4 className="h5 mb-2" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-primary)', fontWeight: '700' }}>Lucky Draw Offer</h4>
+                <p className="small mb-3 fw-bold" style={{ color: 'var(--color-accent)' }}>Win Silver Coins! 🥇🥈🥉</p>
                 <p className="text-muted small mb-0">
                   Buy a <strong>26kg Rice Bag</strong> to get a coupon. Draw on 1st of every month!
                 </p>
@@ -52,13 +52,14 @@ function OffersSection() {
           </div>
           {offers.map((offer) => (
             <div key={offer.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
-              <div className={`card h-100 shadow-sm border-0 bg-${offer.color} bg-opacity-10`}>
-                <div className="card-body text-center p-4">
+              <div className="sbt-card h-100" style={{ background: "#ffffff" }}>
+                <div className="card-body text-center p-4 d-flex flex-column justify-content-center">
                   <div className="mb-3" style={{ fontSize: "3rem" }}>
-                    {offer.icon}
+                    <span className="icon-animate">{offer.icon}</span>
                   </div>
-                  <h4 className="h5 fw-bold mb-3">{offer.title}</h4>
-                  <p className="text-muted mb-0">{offer.description}</p>
+                  <h4 className="h5 mb-3" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-primary)', fontWeight: '700' }}>{offer.title}</h4>
+                  <p className="text-muted mb-3">{offer.description}</p>
+                  <small className="text-accent fw-bold" style={{ cursor: 'pointer' }}>View Details →</small>
                 </div>
               </div>
             </div>

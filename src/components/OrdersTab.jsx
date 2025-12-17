@@ -9,7 +9,7 @@ import {
     updateDoc,
     deleteDoc
 } from "firebase/firestore";
-import emailjs from '@emailjs/browser';
+import { ORDER_STATUS } from "../utils/constants";
 
 export default function OrdersTab() {
     const [orders, setOrders] = useState([]);
@@ -129,10 +129,10 @@ export default function OrdersTab() {
 
     const getStatusColor = (status) => {
         switch (status) {
-            case "pending": return "warning";
-            case "accepted": return "info";
-            case "delivered": return "success";
-            case "cancelled": return "danger";
+            case ORDER_STATUS.PENDING: return "warning";
+            case ORDER_STATUS.ACCEPTED: return "info";
+            case ORDER_STATUS.DELIVERED: return "success";
+            case ORDER_STATUS.CANCELLED: return "danger";
             default: return "secondary";
         }
     };
@@ -153,10 +153,10 @@ export default function OrdersTab() {
                         onChange={(e) => setFilterStatus(e.target.value)}
                     >
                         <option value="all">All Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="accepted">Accepted</option>
-                        <option value="delivered">Delivered</option>
-                        <option value="cancelled">Cancelled</option>
+                        <option value={ORDER_STATUS.PENDING}>Pending</option>
+                        <option value={ORDER_STATUS.ACCEPTED}>Accepted</option>
+                        <option value={ORDER_STATUS.DELIVERED}>Delivered</option>
+                        <option value={ORDER_STATUS.CANCELLED}>Cancelled</option>
                     </select>
                 </div>
             </div>
@@ -173,6 +173,9 @@ export default function OrdersTab() {
                                     <small className="text-muted">{formatDate(order.createdAt)}</small>
                                 </div>
                                 <div className="card-body">
+                                    <div className="mb-2 text-muted small" style={{ fontSize: '0.75rem', background: '#f8f9fa', padding: '4px', borderRadius: '4px' }}>
+                                        User ID: {order.userId || "Guest"}
+                                    </div>
                                     <h5 className="card-title mb-2">{order.userInfo?.name || "Guest"}</h5>
                                     <p className="card-text mb-1">
                                         <strong>Phone:</strong> <a href={`tel:${order.userInfo?.phoneNumber}`}>{order.userInfo?.phoneNumber}</a>
@@ -196,14 +199,14 @@ export default function OrdersTab() {
                                     </div>
 
                                     <div className="d-grid gap-2">
-                                        {order.status === 'pending' && (
-                                            <button className="btn btn-sm btn-info text-white" onClick={() => handleStatusUpdate(order.id, 'accepted')}>Accept Order</button>
+                                        {order.status === ORDER_STATUS.PENDING && (
+                                            <button className="btn btn-sm btn-info text-white" onClick={() => handleStatusUpdate(order.id, ORDER_STATUS.ACCEPTED)}>Accept Order</button>
                                         )}
-                                        {order.status === 'accepted' && (
-                                            <button className="btn btn-sm btn-success" onClick={() => handleStatusUpdate(order.id, 'delivered')}>Mark Delivered</button>
+                                        {order.status === ORDER_STATUS.ACCEPTED && (
+                                            <button className="btn btn-sm btn-success" onClick={() => handleStatusUpdate(order.id, ORDER_STATUS.DELIVERED)}>Mark Delivered</button>
                                         )}
-                                        {order.status !== 'cancelled' && order.status !== 'delivered' && (
-                                            <button className="btn btn-sm btn-outline-danger" onClick={() => handleStatusUpdate(order.id, 'cancelled')}>Cancel Order</button>
+                                        {order.status !== ORDER_STATUS.CANCELLED && order.status !== ORDER_STATUS.DELIVERED && (
+                                            <button className="btn btn-sm btn-outline-danger" onClick={() => handleStatusUpdate(order.id, ORDER_STATUS.CANCELLED)}>Cancel Order</button>
                                         )}
                                         <button className="btn btn-sm btn-link text-muted" onClick={() => handleDeleteOrder(order.id)}>Delete Record</button>
                                     </div>

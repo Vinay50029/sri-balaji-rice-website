@@ -13,12 +13,12 @@ function About() {
       <div
         className="position-relative text-center text-white py-5 mb-5"
         style={{
-          background: "linear-gradient(135deg, #4672a9ff 0%, #0f5132 100%)",
+          background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)",
           borderRadius: "0 0 2rem 2rem"
         }}
       >
         <div className="container py-5">
-          <h1 className="display-4 fw-bold mb-3">Sri Balaji Rice Traders</h1>
+          <h1 className="display-4 fw-bold mb-3" style={{ color: '#ffffff' }}>Sri Balaji Rice Traders</h1>
           <p className="lead fs-4 opacity-75">
             Premium Quality Rice for Every Household
           </p>
@@ -107,11 +107,11 @@ function About() {
               </div>
 
               <div className="d-grid gap-2 mt-4">
-                <a href="tel:9951037494" className="btn btn-outline-success fw-semibold">
+                <a href="tel:9951037494" className="btn btn-outline-primary fw-semibold">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-telephone-fill me-2" viewBox="0 0 16 16"><path fillRule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z" /></svg>
                   Call 9951037494
                 </a>
-                <a href="https://maps.app.goo.gl/aRwbCxHUzGfkP3hN9" target="_blank" rel="noopener noreferrer" className="btn btn-dark fw-semibold">
+                <a href="https://maps.app.goo.gl/aRwbCxHUzGfkP3hN9" target="_blank" rel="noopener noreferrer" className="btn btn-primary fw-semibold">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-geo-alt-fill me-2" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" /></svg>
                   Get Directions
                 </a>

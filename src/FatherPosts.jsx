@@ -3,12 +3,14 @@ import { db } from "./firebase";
 import {
   collection,
   getDocs,
+  onSnapshot,
   query,
   orderBy,
 } from "firebase/firestore";
 import PublicGallery from "./components/PublicGallery";
 import PostModal from "./components/PostModal";
 import OffersSection from "./components/OffersSection";
+import BrandHero from "./components/BrandHero";
 
 // ============================================
 // RICE CATEGORY SECTIONS - CUSTOMIZE TEXT HERE
@@ -17,15 +19,9 @@ import OffersSection from "./components/OffersSection";
 // TO CHANGE CATEGORY SUBTITLES: Change "subtitle" value below (the description text)
 // TO ADD/REMOVE CATEGORIES: Add or remove objects from this array
 // NOTE: The "key" must match the category values used in FatherAdmin.jsx
-const KNOWN_SUBTITLES = {
-  raw: "Classic raw rice varieties straight from the mill.",
-  new: "Freshly milled new-season rice.",
-  old: "Aged rice for premium aroma and texture.",
-  steam: "Steamed rice varieties with a fluffy finish.",
-  broken: "Broken rice options for everyday cooking.",
-  brown: "Healthy brown rice packed with nutrients.",
-  Premium: "Premium quality rice varieties for special occasions.",
-};
+import { RICE_CATEGORY_SUBTITLES } from "./utils/constants";
+
+const KNOWN_SUBTITLES = RICE_CATEGORY_SUBTITLES;
 
 function FatherPosts({ onCategorySelect, categories = [] }) {
   const [posts, setPosts] = useState([]);
@@ -34,29 +30,26 @@ function FatherPosts({ onCategorySelect, categories = [] }) {
   const [selectedPost, setSelectedPost] = useState(null);
 
   useEffect(() => {
-    const loadPosts = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const q = query(
-          collection(db, "fatherPosts"),
-          orderBy("createdAt", "desc")
-        );
-        const snapshot = await getDocs(q);
-        const data = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setPosts(data);
-      } catch (err) {
-        console.error("Error loading fatherPosts:", err);
-        setError("Failed to load posts.");
-      } finally {
-        setLoading(false);
-      }
-    };
+    setLoading(true);
+    const q = query(
+      collection(db, "fatherPosts"),
+      orderBy("createdAt", "desc")
+    );
 
-    loadPosts();
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setPosts(data);
+      setLoading(false);
+    }, (err) => {
+      console.error("Error loading fatherPosts:", err);
+      setError("Failed to load posts.");
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   if (loading) {
@@ -105,14 +98,18 @@ function FatherPosts({ onCategorySelect, categories = [] }) {
 
   return (
     <>
-      {/* OFFERS SECTION - First section before rice categories */}
+      {/* BRAND HERO - Priority 1 & 2 */}
+      <BrandHero />
+
+      {/* OFFERS SECTION - Priority 4 (Secondary) */}
       <OffersSection />
 
-      {/* DIVIDER LINE AFTER OFFERS */}
-      <div style={{
-        borderTop: "1px solid rgb(0, 0, 0)",
-        margin: "40px 0",
-        width: "100%"
+      {/* CONTRAST DIVIDER - Separating Offers from Products */}
+      <div id="shop-start" style={{
+        height: "4px",
+        background: "linear-gradient(90deg, transparent, var(--color-primary), transparent)",
+        margin: "20px 0",
+        opacity: 0.8
       }} />
 
       {/* RICE CATEGORY SECTIONS */}

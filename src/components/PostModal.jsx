@@ -1,5 +1,6 @@
 import MediaSlider from "./MediaSlider";
 import { useCart } from "../context/CartContext";
+import { formatPrice } from "../utils/helpers";
 
 const inferTypeFromUrl = (url = "") => {
   if (url.match(/\.(mp4|mov|m4v|webm|avi|mkv)$/i)) {
@@ -32,12 +33,7 @@ const buildMediaList = (post) => {
   });
 };
 
-const formatPrice = (price) => {
-  if (price === null || price === undefined || Number.isNaN(Number(price))) {
-    return "Price unavailable";
-  }
-  return `₹${Number(price).toLocaleString("en-IN")}`;
-};
+
 
 
 function PostModal({ post, onClose }) {
@@ -125,7 +121,7 @@ function PostModal({ post, onClose }) {
               return (
                 <button
                   type="button"
-                  className="btn btn-dark w-100 mt-2 d-flex align-items-center justify-content-center gap-2 py-2"
+                  className="btn btn-primary w-100 mt-2 d-flex align-items-center justify-content-center gap-2 py-2"
                   onClick={(e) => {
                     e.stopPropagation();
                     addToCart(post);

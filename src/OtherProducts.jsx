@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "./firebase";
 import PublicGallery from "./components/PublicGallery";
 import PostModal from "./components/PostModal";
@@ -11,29 +11,26 @@ function OtherProducts() {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-    const loadProducts = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const q = query(
-          collection(db, "otherProducts"),
-          orderBy("createdAt", "desc")
-        );
-        const snapshot = await getDocs(q);
-        const data = snapshot.docs.map((docSnap) => ({
-          id: docSnap.id,
-          ...docSnap.data(),
-        }));
-        setPosts(data);
-      } catch (err) {
-        console.error("Error loading otherProducts:", err);
-        setError("Failed to load other products.");
-      } finally {
-        setLoading(false);
-      }
-    };
+    setLoading(true);
+    const q = query(
+      collection(db, "otherProducts"),
+      orderBy("createdAt", "desc")
+    );
 
-    loadProducts();
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map((docSnap) => ({
+        id: docSnap.id,
+        ...docSnap.data(),
+      }));
+      setPosts(data);
+      setLoading(false);
+    }, (err) => {
+      console.error("Error loading otherProducts:", err);
+      setError("Failed to load other products.");
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   if (loading) {
@@ -67,9 +64,9 @@ function OtherProducts() {
         posts={posts}
         onSelectPost={setSelectedProduct}
         //label="Other Products"
-        title="Millets & Other Products"
-        subtitle="Explore additional items we supply apart from regular rice bags."
-        emptyMessage="No additional products available right now."
+        title="Kitchen Essentials"
+        subtitle="Premium pulses, millets, flours, and other daily staples."
+        emptyMessage="No kitchen essentials available right now."
       />
 
       {selectedProduct && (

@@ -1,86 +1,239 @@
 /* ============================================
-   GLOBAL STYLES - CUSTOMIZE COLORS & FONTS HERE
+   GLOBAL DYANAMIC THEME - ROYAL ORGANIC
    ============================================ */
 
 :root {
-  /* TO CHANGE FONT FAMILY: Change "Inter" to your preferred font (e.g., "Georgia", "Times New Roman", "Arial") */
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  /* TO CHANGE LINE SPACING: Change 1.5 to your preferred value (e.g., 1.2, 1.8) */
-  line-height: 1.5;
-  /* TO CHANGE DEFAULT FONT WEIGHT: Change 400 to 300 (light), 500 (medium), 700 (bold) */
-  font-weight: 400;
-  /* TO CHANGE DEFAULT TEXT COLOR: Change #212529 to your preferred hex color */
-  color: #212529;
-  /* TO CHANGE DEFAULT BACKGROUND COLOR: Change #f8f9fa to your preferred hex color */
-  background-color: #f8f9fa;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* COLORS */
+  --color-primary: #1a472a;
+  /* Deep Forest Green (Trust, Nature) */
+  --color-primary-dark: #0d2b18;
+  --color-secondary: #c5a059;
+  /* Muted Gold (Premium, Quality) */
+  --color-secondary-light: #e6c88b;
+  --color-accent: #C89B3C;
+  /* Deep Saffron / Rice Gold (Action Focus) */
+  --color-bg-body: #faf9f6;
+  /* Off-white / Cream (Rice, Organic) */
+  --color-bg-surface: #ffffff;
+  --color-text-main: #2c3e50;
+  /* Dark Charcoal (Readability) */
+  --color-text-muted: #6c757d;
+
+  /* FONTS */
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Lato', sans-serif;
+
+  /* SHADOWS & GLASS */
+  --shadow-sm: 0 2px 8px rgba(26, 71, 42, 0.08);
+  --shadow-md: 0 8px 24px rgba(26, 71, 42, 0.12);
+  --shadow-lg: 0 16px 48px rgba(26, 71, 42, 0.18);
+
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-blur: 12px;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  /* TO CHANGE PAGE BACKGROUND COLOR: Change #f8f9fa to your preferred hex color */
-  background: #f8f9fa;
+  background-color: var(--color-bg-body);
+  color: var(--color-text-main);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* BUTTON FOCUS STYLES */
-button:focus,
-button:focus-visible {
-  /* TO CHANGE FOCUS OUTLINE COLOR: Change rgba(13, 110, 253, 0.4) - first 3 numbers are RGB, last is opacity (0-1) */
-  outline: 3px solid rgba(13, 110, 253, 0.4);
-  outline-offset: 2px;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* UTILITIES */
+.sbt-glass {
+  background: radial-gradient(circle at 50% -20%, rgba(220, 235, 225, 0.95) 0%, rgba(245, 247, 246, 0.95) 80%);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-bottom: 1px solid rgba(26, 71, 42, 0.05);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+}
+
+.sbt-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* BUTTONS OVERRIDE */
+.btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.btn-primary,
+.btn-outline-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-outline-primary {
+  background-color: transparent;
+  color: var(--color-primary);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--color-primary);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+
+
+.text-accent {
+  color: var(--color-accent) !important;
+}
+
+.btn-accent {
+  background-color: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+}
+
+.btn-accent:hover {
+  background-color: #b08630;
+  border-color: #b08630;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* CARD STYLES */
+.sbt-card {
+  background: var(--color-bg-surface);
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.4s ease;
+  overflow: hidden;
+}
+
+.sbt-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.sbt-card:hover .icon-animate {
+  transform: scale(1.2);
+}
+
+.icon-animate {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: inline-block;
+}
+
+/* CUSTOM MODAL OVERRIDES */
+.custom-modal-backdrop {
+  background: rgba(13, 43, 24, 0.6) !important;
+  /* using primary dark with opacity */
+  backdrop-filter: blur(4px);
+}
+
+.custom-modal-content {
+  border-radius: 20px !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+/* SCROLLBAR HIDDEN BUT FUNCTIONAL */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 /* ============================================
-   MODAL STYLES - CUSTOMIZE COLORS & SIZES HERE
+   FLOATING FOOTER NAVIGATION
    ============================================ */
-
-/* MODAL BACKDROP (the dark overlay behind the modal) */
-.custom-modal-backdrop {
+.floating-footer {
   position: fixed;
-  inset: 0;
-  /* TO CHANGE BACKDROP COLOR/OPACITY: Change rgba(0, 0, 0, 0.45) 
-     - First 3 numbers (0, 0, 0) = black color, change to (255, 255, 255) for white
-     - Last number (0.45) = opacity, change to 0.3 (lighter) or 0.7 (darker) */
-  background: rgba(0, 0, 0, 0.45);
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: auto;
+  max-width: 95vw;
+  padding: 6px 12px;
+  background: rgba(26, 71, 42, 0.90);
+  /* Primary Dark Green */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 50px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   display: flex;
-  justify-content: center;
+  gap: 8px;
   align-items: center;
-  padding: 16px;
-  /* TO CHANGE BACKDROP PADDING: Change this value */
-  z-index: 1050;
+  justify-content: center;
+  flex-wrap: nowrap;
+  /* CRITICAL: Prevents stacking on mobile */
+  overflow-x: auto;
+  /* Safety scroll for tiny screens */
+  -webkit-overflow-scrolling: touch;
 }
 
-/* MODAL CONTENT BOX (the white box with product details) */
-.custom-modal-content {
-  /* TO CHANGE MODAL BACKGROUND COLOR: Change #fff to your preferred hex color */
-  background: #fff;
-  /* TO CHANGE MODAL CORNER RADIUS: Change 12px to your preferred value (e.g., 8px, 16px, 20px) */
-  border-radius: 12px;
-  /* TO CHANGE MODAL PADDING: Change 24px to your preferred value */
-  padding: 24px;
-  /* TO CHANGE MODAL MAX WIDTH: Change 900px to your preferred value (e.g., 800px, 1000px, 1200px) */
-  width: min(800px, 100%);
-  /* TO CHANGE MODAL MAX HEIGHT: Change 90vh to 80vh (smaller) or 95vh (larger) */
-  max-height: 80vh;
-  overflow-y: auto;
-  /* TO CHANGE MODAL SHADOW: Modify rgba(0, 0, 0, 0.15) - last number controls shadow intensity (0-1) */
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+.footer-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 50px;
+  padding: 6px 15px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  /* Prevents text breaking */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
 }
 
-/* MODAL MEDIA WRAPPER */
-.post-modal-media-wrapper {
-  width: 100%;
-  /* Default to 100% on mobile */
-  margin: 0 auto;
+.footer-btn span {
+  white-space: nowrap;
 }
 
-@media (min-width: 768px) {
-  .post-modal-media-wrapper {
-    width: 65%;
-    /* Width on desktop */
-  }
+.footer-btn:hover {
+  background: #ffffff;
+  color: #1a472a;
+  /* Match primary dark green for text */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+  border-color: #ffffff;
 }

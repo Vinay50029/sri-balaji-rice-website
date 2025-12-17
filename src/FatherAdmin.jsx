@@ -20,32 +20,18 @@ import {
 } from "firebase/firestore";
 import OrdersTab from "./components/OrdersTab";
 
+import {
+  FATHER_UID,
+  ADMIN_COLLECTIONS,
+  INITIAL_RICE_CATEGORIES
+} from "./utils/constants";
+// ... (imports)
+
 // TODO: Replace this with your father's real Firebase Auth UID
 // After creating the account in Firebase Authentication, copy the UID and paste below.
-const FATHER_UID = "lvWMnEjk3bcFMOWuaa7DWdhkLWb2";
+// const FATHER_UID = "lvWMnEjk3bcFMOWuaa7DWdhkLWb2";
 
-const COLLECTIONS = {
-  fatherPosts: {
-    key: "fatherPosts",
-    label: "Home Posts",
-    description: "Items shown on the main home page.",
-  },
-  otherProducts: {
-    key: "otherProducts",
-    label: "Other Products",
-    description: "Items shown on the Pellets / Other Products page.",
-  },
-  offers: {
-    key: "offers",
-    label: "Special Offers",
-    description: "Manage offers shown on the home page.",
-  },
-  orders: {
-    key: "orders",
-    label: "Orders",
-    description: "Manage customer orders instantly.",
-  },
-};
+const COLLECTIONS = ADMIN_COLLECTIONS;
 
 // const INITIAL_RICE_CATEGORIES = [
 //   { value: "raw", label: "Sona Masuri raw Rice" },
