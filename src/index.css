@@ -10,7 +10,7 @@
   --color-secondary: #c5a059;
   /* Muted Gold (Premium, Quality) */
   --color-secondary-light: #e6c88b;
-  --color-accent: #C89B3C;
+  --color-accent: #3e3b3b;
   /* Deep Saffron / Rice Gold (Action Focus) */
   --color-bg-body: #faf9f6;
   /* Off-white / Cream (Rice, Organic) */
@@ -20,8 +20,8 @@
   --color-text-muted: #6c757d;
 
   /* FONTS */
-  --font-heading: 'Playfair Display', serif;
-  --font-body: 'Lato', sans-serif;
+  --font-heading: 'Acme', sans-serif;
+  --font-body: 'Acme', sans-serif;
 
   /* SHADOWS & GLASS */
   --shadow-sm: 0 2px 8px rgba(26, 71, 42, 0.08);

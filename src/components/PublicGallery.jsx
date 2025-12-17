@@ -80,14 +80,14 @@ function PublicGallery({
                         {formatPrice(post.price)}
                       </p>
 
-                      <div className="mb-2 small">
+                      {/* <div className="mb-2 small">
                         <span className="text-warning">
                           {post.ratingAvg ? Array(Math.round(post.ratingAvg)).fill("⭐").join("") : "☆☆☆☆☆"}
                         </span>
                         <span className="text-muted ms-1">
                           ({post.ratingCount || 0} reviews)
                         </span>
-                      </div>
+                      </div> */}
 
                       <p className="text-muted mb-4" style={{ fontSize: '0.875rem', lineHeight: '1.6' }}>
                         Weight: {post.weight || "Not specified"}
