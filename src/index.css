@@ -266,11 +266,3 @@ h6 {
   box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
   border-color: #ffffff;
 }
-
-.container-fluid {
-  padding: 0 1rem;
-  margin: 0 auto;
-  max-width: 95vw;
-  width: auto;
-  z-index: 9999;
-}
