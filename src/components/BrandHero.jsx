@@ -8,7 +8,7 @@ export default function BrandHero() {
                     <div className="col-lg-8">
                         <div className="d-inline-block px-3 py-1 rounded-pill bg-light border border-secondary mb-3">
                             <span className="small fw-bold text-uppercase" style={{ letterSpacing: "1px", color: "var(--color-primary)" }}>
-                                Sri Balaji Traders • 1000+ Happy Customers
+                                Trusted by Many Customers • Wholesale & Retail Experts • Customer Satisfaction First
                             </span>
                         </div>
                         <h1 className="display-4 fw-bold mb-4" style={{ color: "var(--color-primary)", letterSpacing: "-0.02em" }}>
