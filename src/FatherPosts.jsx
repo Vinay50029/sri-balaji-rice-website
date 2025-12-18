@@ -126,9 +126,10 @@ function FatherPosts({ onCategorySelect, categories = [] }) {
           {/* Light divider line after each section (except the last one) */}
           {index < sectionsToRender.length - 1 && (
             <div style={{
-              borderTop: "1px solid rgb(0, 0, 0)",
-              margin: "40px 0",
-              width: "100%"
+              height: "4px",
+              background: "linear-gradient(90deg, transparent, var(--color-primary), transparent)",
+              margin: "20px 0",
+              opacity: 0.8
             }} />
           )}
         </div>

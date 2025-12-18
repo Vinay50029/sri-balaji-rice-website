@@ -25,7 +25,7 @@ export const RICE_CATEGORY_SUBTITLES = {
     raw: "Classic raw rice varieties straight from the mill.",
     new: "Freshly milled new-season rice.",
     old: "Aged rice for premium aroma and texture.",
-    steam: "Steamed rice varieties with a fluffy finish.",
+    steam: "Traditional single-polished rice for a healthy diet.",
     broken: "Broken rice options for everyday cooking.",
     brown: "Healthy brown rice packed with nutrients.",
     Premium: "Premium quality rice varieties for special occasions.",

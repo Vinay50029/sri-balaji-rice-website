@@ -48,7 +48,7 @@ export default function FloatingFooter({ onOpenOrders }) {
                 >
                     Orders
                 </button>
-                <div style={{ marginLeft: '4px' }}>
+                <div style={{ marginLeft: '4px', marginTop: '3px' }}>
                     <UserButton />
                 </div>
             </SignedIn>

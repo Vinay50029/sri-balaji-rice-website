@@ -57,7 +57,7 @@ h6 {
 
 /* UTILITIES */
 .sbt-glass {
-  background: radial-gradient(circle at 50% -20%, rgba(220, 235, 225, 0.95) 0%, rgba(245, 247, 246, 0.95) 80%);
+  background: radial-gradient(circle at 50% -20%, rgba(214, 236, 220, 0.95) 0%, rgba(244, 249, 246, 0.95) 80%);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border-bottom: 1px solid rgba(26, 71, 42, 0.05);
@@ -152,15 +152,44 @@ h6 {
 
 /* CUSTOM MODAL OVERRIDES */
 .custom-modal-backdrop {
-  background: rgba(13, 43, 24, 0.6) !important;
-  /* using primary dark with opacity */
-  backdrop-filter: blur(4px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(13, 43, 24, 0.8) !important;
+  backdrop-filter: blur(5px);
+  z-index: 9999 !important;
+  /* Higher than Navbar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .custom-modal-content {
-  border-radius: 20px !important;
+  background: #ffffff;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+  border-radius: 24px !important;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  box-shadow: var(--shadow-lg) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  position: relative;
+  animation: modal-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes modal-pop {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* SCROLLBAR HIDDEN BUT FUNCTIONAL */
@@ -189,7 +218,7 @@ h6 {
   width: auto;
   max-width: 95vw;
   padding: 6px 12px;
-  background: rgba(26, 71, 42, 0.90);
+  background: rgba(31, 84, 50, 0.9);
   /* Primary Dark Green */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -230,10 +259,18 @@ h6 {
 }
 
 .footer-btn:hover {
-  background: #ffffff;
+  background: #b5a40d;
   color: #1a472a;
   /* Match primary dark green for text */
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
   border-color: #ffffff;
+}
+
+.container-fluid {
+  padding: 0 1rem;
+  margin: 0 auto;
+  max-width: 95vw;
+  width: auto;
+  z-index: 9999;
 }

@@ -152,7 +152,7 @@ export default function UserOrders({ user, onClose }) {
         width: "100%",
         height: "100%",
         backgroundColor: "rgba(0,0,0,0.5)",
-        zIndex: 1060,
+        zIndex: 9999,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -194,10 +194,10 @@ export default function UserOrders({ user, onClose }) {
                             ↻
                         </button>
                     </div>
-                    <div className="d-flex align-items-center gap-2">
+                    {/* <div className="d-flex align-items-center gap-2">
                         <small className="text-muted" style={{ fontSize: '0.7rem' }}>{user?.id?.slice(6, 11)}...</small>
                         <button type="button" className="btn-close" onClick={onClose}></button>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="flex-grow-1 overflow-auto p-3">

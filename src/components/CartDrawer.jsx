@@ -423,14 +423,20 @@ ${customerDetails.mapsLink ? `📍 Maps: ${customerDetails.mapsLink}` : ''}
                     {cartItems.length > 0 && (
                         <div className="mt-4 pt-3 border-top">
                             <div className="d-flex justify-content-between mb-2">
-                                <span className="fw-bold fs-5">Subtotal:</span>
-                                <span className="fw-bold fs-5">₹{cartTotal}</span>
+                                <span className="fw-bold fs-6">Subtotal:</span>
+                                <span className="fw-bold fs-6">₹{cartTotal}</span>
                             </div>
                             {deliveryFee > 0 && (
-                                <div className="d-flex justify-content-between mb-2 text-danger">
-                                    <span className="small">Delivery Charges:</span>
-                                    <span className="small">+₹{deliveryFee}</span>
-                                </div>
+                                <>
+                                    <div className="d-flex justify-content-between mb-2">
+                                        <span className="small">distance is more than 10 kms</span>
+                                    </div>
+
+                                    <div className="d-flex justify-content-between mb-2 text-danger">
+                                        <span className="fw-bold fs-6">Delivery Charges:</span>
+                                        <span className="fw-bold fs-6">+₹{deliveryFee}</span>
+                                    </div>
+                                </>
                             )}
                             <div className="d-flex justify-content-between mb-4 border-top pt-2">
                                 <span className="fw-bold fs-4">Total:</span>
@@ -517,7 +523,7 @@ ${customerDetails.mapsLink ? `📍 Maps: ${customerDetails.mapsLink}` : ''}
                                                 disabled={!isSecure}
                                                 style={{ fontSize: "0.8rem" }}
                                             >
-                                                {isSecure ? "📍 Get Current Location" : "⚠️ Location Unavailable"}
+                                                {isSecure ? "Current Location" : "⚠️ Location Unavailable"}
                                             </button>
                                         </div>
                                         <input

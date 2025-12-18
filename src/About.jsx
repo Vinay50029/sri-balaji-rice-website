@@ -22,14 +22,14 @@ function About() {
           <p className="lead fs-4 opacity-75">
             Premium Quality Rice for Every Household
           </p>
-          <div className="d-inline-flex gap-3 mt-4">
+          {/* <div className="d-inline-flex gap-3 mt-4">
             <span className="badge bg-light text-success px-3 py-2 rounded-pill fw-semibold">
               <i className="bi bi-shop me-2"></i>Since 1994
             </span>
             <span className="badge bg-light text-success px-3 py-2 rounded-pill fw-semibold">
               <i className="bi bi-geo-alt-fill me-2"></i>Kapra, Hyderabad
             </span>
-          </div>
+          </div> */}
         </div>
       </div>
 

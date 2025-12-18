@@ -36,7 +36,15 @@ const buildMediaList = (post) => {
 
 
 
+import { useEffect } from "react";
+
 function PostModal({ post, onClose }) {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
   const { addToCart, cartItems, updateQuantity, removeFromCart } = useCart();
 
   if (!post) return null;

@@ -94,6 +94,7 @@ function FatherAdmin() {
   const [uploading, setUploading] = useState(false);
   const [mediaItems, setMediaItems] = useState([]);
   const [title, setTitle] = useState("");
+  const [subTitle, setSubTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [weight, setWeight] = useState("");
@@ -328,6 +329,7 @@ function FatherAdmin() {
     };
 
     if (isOffers) {
+      payload.subTitle = subTitle;
       payload.icon = icon;
       payload.color = color;
     } else {
@@ -356,6 +358,7 @@ function FatherAdmin() {
       }
 
       setTitle("");
+      setSubTitle("");
       setDescription("");
       setPrice("");
       setWeight("");
@@ -391,6 +394,7 @@ function FatherAdmin() {
   const startEditingPost = (post) => {
     setEditingPostId(post.id);
     setTitle(post.title || "");
+    setSubTitle(post.subTitle || "");
     setDescription(post.description || "");
     setPrice(
       post.price !== undefined && post.price !== null ? String(post.price) : ""
@@ -420,6 +424,7 @@ function FatherAdmin() {
   const cancelEditing = () => {
     setEditingPostId(null);
     setTitle("");
+    setSubTitle("");
     setDescription("");
     setPrice("");
     setWeight("");
@@ -660,6 +665,21 @@ function FatherAdmin() {
                 />
               </div>
 
+              {isOffers && (
+                <div>
+                  <label style={{ fontWeight: 600, display: "block", marginBottom: 6 }}>
+                    Subtitle (Highlight text)
+                  </label>
+                  <input
+                    type="text"
+                    style={inputStyle}
+                    placeholder="Enter subtitle"
+                    value={subTitle}
+                    onChange={(e) => setSubTitle(e.target.value)}
+                  />
+                </div>
+              )}
+
               {isRiceCollection && (
                 <div>
                   <label style={{ fontWeight: 600, display: "block", marginBottom: 6 }}>
@@ -695,18 +715,17 @@ function FatherAdmin() {
                   </div>
                   <div className="col-12 col-sm-6">
                     <label style={{ fontWeight: 600, display: "block", marginBottom: 6 }}>
-                      Card Color
+                      Card Theme
                     </label>
                     <select
                       style={inputStyle}
                       value={color}
                       onChange={(e) => setColor(e.target.value)}
                     >
-                      <option value="success">Green (Success)</option>
-                      <option value="primary">Blue (Primary)</option>
-                      <option value="warning">Yellow (Warning)</option>
-                      <option value="danger">Red (Danger)</option>
-                      <option value="info">Cyan (Info)</option>
+                      <option value="gold">Gold (Lucky Draw)</option>
+                      <option value="green">Green (Fresh)</option>
+                      <option value="blue">Blue (Cool)</option>
+                      <option value="white">White (Simple)</option>
                     </select>
                   </div>
 
@@ -716,12 +735,21 @@ function FatherAdmin() {
                       Live Preview
                     </label>
                     <div style={{ maxWidth: "300px", margin: "0 auto" }}>
-                      <div className={`card h-100 shadow-sm border-0 bg-${color} bg-opacity-10`}>
+                      <div
+                        className={`card h-100 shadow-sm`}
+                        style={{
+                          border: color === 'gold' ? '1px solid #e6c88b' : '1px solid rgba(0,0,0,0.1)',
+                          background: color === 'gold' ? "linear-gradient(135deg, #fff3e0 0%, #fff8e1 100%)" :
+                            color === 'green' ? "linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%)" :
+                              color === 'blue' ? "linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%)" : "#ffffff"
+                        }}
+                      >
                         <div className="card-body text-center p-4">
                           <div className="mb-3" style={{ fontSize: "3rem" }}>
                             {icon || "🎁"}
                           </div>
-                          <h4 className="h5 fw-bold mb-3">{title || "Offer Title"}</h4>
+                          <h4 className="h5 fw-bold mb-3" style={{ color: "var(--color-primary)" }}>{title || "Offer Title"}</h4>
+                          <p className="small mb-3 fw-bold" style={{ color: 'var(--color-accent)' }}>{subTitle || "Subtitle"}</p>
                           <p className="text-muted mb-0">{description || "Offer description will appear here..."}</p>
                         </div>
                       </div>

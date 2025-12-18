@@ -2,7 +2,7 @@ import React from "react";
 
 export default function BrandHero() {
     return (
-        <section className="position-relative overflow-hidden text-center bg-white" style={{ paddingTop: "70px", paddingBottom: "60px" }}>
+        <section className="position-relative overflow-hidden text-center bg-white" style={{ paddingTop: "30px", paddingBottom: "60px" }}>
             <div className="container position-relative" style={{ zIndex: 10 }}>
                 <div className="row justify-content-center">
                     <div className="col-lg-8">
@@ -14,9 +14,8 @@ export default function BrandHero() {
                         <h1 className="display-4 fw-bold mb-4" style={{ color: "var(--color-primary)", letterSpacing: "-0.02em" }}>
                             Premium Rice, <span style={{ color: "var(--color-secondary)" }}>Pure Tradition</span>
                         </h1>
-                        <p className="lead text-muted mb-5 mx-auto" style={{ maxWidth: "600px" }}>
-                            We bring you the finest selection of sorted, polished, and authentic rice varieties.
-                            Built on trust, quality, and a commitment to healthy living.
+                        <p className="lead text-muted mb-5 mx-auto" style={{ maxWidth: "500px" }}>
+                            From premium Sona Masuri and aged HMT to healthy Brown Rice and Steam varieties We bring you the finest authentic selections.
                         </p>
 
                         <div className="d-flex justify-content-center gap-4 flex-wrap">
@@ -33,7 +32,7 @@ export default function BrandHero() {
                                 </div>
                             </div>
 
-                            <div className="d-flex align-items-center gap-2">
+                            {/* <div className="d-flex align-items-center gap-2">
                                 <div className="rounded-circle bg-light p-2 text-primary">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                                         <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-4 0H.5a1.5 1.5 0 0 1-1.5-1.5v-6.5zm11 .5a.5.5 0 0 0-.5.5v2h2a.5.5 0 0 0 .5-.5V4a.5.5 0 0 0-.5-.5h-1.5zM.5 3a.5.5 0 0 0-.5.5v6.5A.5.5 0 0 0 .5 10h1a2 2 0 0 0 4 0h6a2 2 0 0 0 4 0h1a.5.5 0 0 0 .5-.5v-2.125a.5.5 0 0 0-.11-.313l-1.48-1.85A.5.5 0 0 0 13.02 5H11.5a1.5 1.5 0 0 1-1.5-1.5v-2a.5.5 0 0 0-.5-.5H1.5A.5.5 0 0 0 .5 3z" />
@@ -43,7 +42,7 @@ export default function BrandHero() {
                                     <h6 className="mb-0 fw-bold">Fast Delivery</h6>
                                     <small className="text-muted">Within 24 Hours</small>
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div className="d-flex align-items-center gap-2">
                                 <div className="rounded-circle bg-light p-2 text-primary">
@@ -58,14 +57,16 @@ export default function BrandHero() {
                             </div>
 
                             <div className="d-flex align-items-center gap-2">
-                                <div className="rounded-circle bg-light p-2 text-primary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                                    </svg>
+                                <div className="rounded-circle p-2 text-primary">
+                                    <a href="https://www.youtube.com/@SriBalajiTraders1974" target="_blank" rel="noopener noreferrer" className="hover-scale">
+                                        <img src="/youtube.jpg" alt="YouTube" width="42" height="27" className="rounded-3" />
+                                    </a>
                                 </div>
                                 <div className="text-start">
-                                    <h6 className="mb-0 fw-bold">Local Delivery</h6>
-                                    <small className="text-muted">Direct to Doorstep</small>
+                                    <a href="https://www.youtube.com/@SriBalajiTraders1974" target="_blank" rel="noopener noreferrer" className="text-decoration-none text-dark hover-scale d-block">
+                                        <h6 className="mb-0 fw-bold">Youtube</h6>
+                                        <small className="text-muted">Tap to watch</small>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -73,7 +74,7 @@ export default function BrandHero() {
 
                         <button
                             type="button"
-                            className="btn btn-accent px-5 py-3 fw-bold mt-5 rounded-pill shadow-lg"
+                            className="btn btn-accent px-3 py-2 fw-bold mt-5 rounded-pill shadow-lg"
                             style={{ letterSpacing: '1px', fontSize: '1.1rem' }}
                             onClick={() => document.getElementById('shop-start')?.scrollIntoView({ behavior: 'smooth' })}
                         >

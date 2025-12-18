@@ -140,7 +140,7 @@ export default function OrdersTab() {
     if (loading) return <div className="text-center p-5">Loading Orders...</div>;
 
     return (
-        <div className="container-fluid">
+        <div className="container-fluid" >
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h3 className="m-0">Customer Orders ({orders.length})</h3>
                 <div className="d-flex gap-2">
