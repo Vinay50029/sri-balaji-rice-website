@@ -598,12 +598,12 @@ ${customerDetails.mapsLink ? `📍 Maps: ${customerDetails.mapsLink}` : ''}
                     position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
                     backgroundColor: "rgba(0,0,0,0.6)", zIndex: 1300, display: "flex", justifyContent: "center", alignItems: "center"
                 }}>
-                    <div className="bg-white p-4 rounded shadow-lg" style={{ width: "90%", maxWidth: "500px", maxHeight: "80vh", overflowY: "auto" }}>
-                        <div className="d-flex justify-content-between align-items-center mb-3">
+                    <div className="bg-white p-4 rounded shadow-lg d-flex flex-column" style={{ width: "90%", maxWidth: "500px", maxHeight: "80vh" }}>
+                        <div className="d-flex justify-content-between align-items-center mb-3 flex-shrink-0">
                             <h5 className="fw-bold m-0">Terms & Conditions</h5>
                             <button className="btn-close" onClick={() => setShowTermsModal(false)}></button>
                         </div>
-                        <div className="text-muted small">
+                        <div className="text-muted small flex-grow-1 overflow-auto pe-2">
                             <p><strong>1. General</strong><br />By placing an order with Sri Balaji Traders, you agree to these terms.</p>
                             <p><strong>2. Pricing & Availability</strong><br />Prices are subject to change without notice. Rice varieties and availability may vary based on season.</p>
                             <p><strong>3. Delivery</strong><br />We strive to deliver within the estimated time, but delays may occur due to traffic or weather conditions.</p>
@@ -613,7 +613,7 @@ ${customerDetails.mapsLink ? `📍 Maps: ${customerDetails.mapsLink}` : ''}
                             <p><strong>7. Bulk Orders</strong><br />Orders containing more than 2 bags might incur a delivery fee to cover auto/transport charges.</p>
                             <p><strong>8. Delivery Distance</strong><br />Free delivery is available within a 10km radius. Locations beyond 10km may be subject to additional distance-based delivery charges.</p>
                         </div>
-                        <button className="btn btn-primary w-100 mt-3" onClick={() => { setAcceptedTerms(true); setShowTermsModal(false); }}>
+                        <button className="btn btn-primary w-100 mt-3 flex-shrink-0" onClick={() => { setAcceptedTerms(true); setShowTermsModal(false); }}>
                             I Understand & Agree
                         </button>
                     </div>

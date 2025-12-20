@@ -9,7 +9,6 @@ import { CartProvider, useCart } from "./context/CartContext";
 import CartDrawer from "./components/CartDrawer";
 import UserOrders from "./components/UserOrders";
 import ScrollToTop from "./components/ScrollToTop";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 
 import Navbar from "./components/Navbar";
 import FloatingFooter from "./components/FloatingFooter";
@@ -28,8 +27,7 @@ function AppContent() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [showOrders, setShowOrders] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { user, loginWithGoogle, logout, setIsCartOpen, cartCount } = useCart();
+  const { user, setIsCartOpen, cartCount } = useCart();
 
   useEffect(() => {
     const handlePop = () => setPath(window.location.pathname);

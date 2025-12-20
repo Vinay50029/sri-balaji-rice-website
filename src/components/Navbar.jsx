@@ -52,7 +52,7 @@ export default function Navbar({ path, navigate, categories, onCategorySelect })
                                 borderRadius: "8px"
                             }}
                         />
-                        <h1 className="mb-0 fs-5" style={{ color: "var(--color-primary)", fontFamily: "'Acme', sans-serif" }}>
+                        <h1 className="mb-0 fs-5 text-nowrap" style={{ color: "var(--color-primary)", fontFamily: "'Acme', sans-serif" }}>
                             Sri Balaji Traders
                         </h1>
                     </div>
@@ -79,7 +79,7 @@ export default function Navbar({ path, navigate, categories, onCategorySelect })
 
                             {isDropdownOpen && (
                                 <div
-                                    className="position-absolute bg-white border-0 rounded-4 shadow-lg py-2 mt-2"
+                                    className="position-absolute bg-white border-0 rounded-4 shadow-lg py-2"
                                     style={{
                                         zIndex: 1050,
                                         maxHeight: "300px",
@@ -93,7 +93,7 @@ export default function Navbar({ path, navigate, categories, onCategorySelect })
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     <div
-                                        className="dropdown-item px-4 py-2 small fw-bold text-uppercase text-muted"
+                                        className="dropdown-item px-4 py-2 small fw-bold text-uppercase text-dark"
                                         style={{ fontSize: "0.75rem", letterSpacing: "1px" }}
                                     >
                                         Rice Varieties

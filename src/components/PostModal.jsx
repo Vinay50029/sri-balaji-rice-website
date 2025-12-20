@@ -81,6 +81,16 @@ function PostModal({ post, onClose }) {
         <br />
 
 
+
+        <div className="mb-2 small">
+          <span className="text-warning">
+            {post.ratingAvg ? Array(Math.round(post.ratingAvg)).fill("⭐").join("") : "☆☆☆☆☆"}
+          </span>
+          <span className="text-muted ms-1 text-nowrap">
+            ({post.ratingCount || 0} reviews)
+          </span>
+        </div>
+
         <p className="text-muted fw-semibold"> Weight: {post.weight || "Not specified"} </p>
 
 
