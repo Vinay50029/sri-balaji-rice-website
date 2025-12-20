@@ -9,6 +9,7 @@ import { CartProvider, useCart } from "./context/CartContext";
 import CartDrawer from "./components/CartDrawer";
 import UserOrders from "./components/UserOrders";
 import ScrollToTop from "./components/ScrollToTop";
+import AIChatBot from "./components/AIChatBot";
 
 import Navbar from "./components/Navbar";
 import FloatingFooter from "./components/FloatingFooter";
@@ -102,6 +103,7 @@ function AppContent() {
     <>
       <CartDrawer />
       <ScrollToTop />
+      <AIChatBot />
       {showOrders && user && <UserOrders user={user} onClose={() => setShowOrders(false)} />}
       <div className="d-flex flex-column min-vh-100">
         <Navbar

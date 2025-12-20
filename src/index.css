@@ -266,3 +266,51 @@ h6 {
   box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
   border-color: #ffffff;
 }
+
+/* MOBILE FIX FOR FLOATING BUTTONS */
+@media (max-width: 768px) {
+  .ai-chat-btn {
+    bottom: 90px !important;
+  }
+
+  .scroll-top-btn {
+    bottom: 150px !important;
+  }
+
+  .ai-chat-window {
+    bottom: 150px !important;
+    max-height: 60vh !important;
+  }
+}
+
+/* MARKDOWN STYLES FOR CHAT */
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 0.85rem;
+  display: block;
+  overflow-x: auto;
+}
+
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid #ddd;
+  padding: 6px;
+  text-align: left;
+}
+
+.markdown-body th {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 20px;
+  margin: 5px 0;
+}
+
+.markdown-body p {
+  margin-bottom: 8px;
+}
