@@ -13,11 +13,7 @@ This project was collaboratively developed by two developers with clearly define
 	•	Designed and implemented the Firebase database and data structure
 	•	Implemented secure authentication for the shop owner (Father Admin)
 	•	Developed core pages:
-	      Home
-        cart
-        orders
-	      Essentials
-	      About
+	      Home | cart | orders | Essentials | About
     
     . Built Looker Studio analytics dashboard
 	•	Integrated order data with notification workflows
