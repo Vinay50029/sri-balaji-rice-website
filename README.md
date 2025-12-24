@@ -1,16 +1,8 @@
-# React + Vite
+🌾 Sri Balaji Traders – Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sri Balaji Traders is a real-world business website developed to support and digitize my father’s rice trading shop.
+The primary goal of this project is to increase sales, improve customer reach, and provide easy access to rice varieties, prices, and shop location through an online platform.
 
-Currently, two official plugins are available:
+This project was collaboratively developed with my brother, following real business requirements and customer needs.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+🔗 Live Website: https://sri-balaji-traders-1.web.app/
