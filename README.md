@@ -9,6 +9,7 @@ The primary goal of this project is to increase sales, improve customer reach, a
 This project was collaboratively developed by two developers with clearly defined following real business requirements and customer needs.
 
 👨‍💻 Vinay Kumar 
+
 	•	Designed and implemented the Firebase database and data structure
 	•	Implemented secure authentication for the shop owner (Father Admin)
 	•	Developed core pages:
@@ -18,24 +19,26 @@ This project was collaboratively developed by two developers with clearly define
 	      Essentials
 	      About
     
-  . Built Looker Studio analytics dashboard
+    . Built Looker Studio analytics dashboard
 	•	Integrated order data with notification workflows
 	•	Implemented product listing and display logic
 	•	Partially implemented customer authentication (initial setup – 50%)
   
 
 👨‍💻 Nikhil Kumar (nick3948)
+
 	•	Integrated Google Generative AI (Gemini API) features
 	•	Enhanced overall UI/UX design
 	•	Completed and finalized customer authentication (100%)
 	•	Improved responsiveness and user experience
-  . Implemented email notifications for orders
+  	. 	Implemented email notifications for orders
 	•	Implemented WhatsApp auto-draft order messaging
 
 
 🔐 Authentication System
 
 The application uses role-based authentication:
+
 	•	Father Admin: Full access to add, edit, and delete products, prices, and images
 	•	Customers: Secure login for browsing and interacting with store content
 
@@ -44,6 +47,7 @@ Authentication is implemented using Clerk with protected routes to prevent unaut
 🗄️ Database Design & Data Management
 
 The application uses Firebase Firestore for real-time data storage and management.
+
 	•	Products: Uploaded by the Father Admin with details such as name, category, price, and image URL
 	•	Users: Stores authenticated customer and admin details
 	•	Cart: Maintains user-specific cart items and quantities
@@ -58,6 +62,7 @@ The application uses Firebase Firestore for real-time data storage and managemen
 This approach ensures better performance, scalability, and faster image loading.	
 
 📍 Business Information
+
 	•	Business Name: Sri Balaji Traders
 	•	Category: Rice & Grocery Trading
 	•	Delivery: Free delivery up to 10 km (selected areas)
