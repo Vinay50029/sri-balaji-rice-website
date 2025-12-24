@@ -49,10 +49,13 @@ The application uses Firebase Firestore for real-time data storage and managemen
 	•	Cart: Maintains user-specific cart items and quantities
 	•	Orders: Stores complete order history for customers and admin tracking
   
--> Image Management & Optimization
+🖼️ Image Management & Optimization
 
-Product images are uploaded to Cloudinary, and the generated image URLs are stored in Firebase to ensure efficient and scalable image handling.
+	•	Product images are uploaded to Cloudinary
+	•	Cloudinary generates optimized and secure image URLs
+	•	Only image URLs are stored in Firebase Firestore
 
+This approach ensures better performance, scalability, and faster image loading.	
 
 📍 Business Information
 	•	Business Name: Sri Balaji Traders
