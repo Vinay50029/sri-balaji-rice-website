@@ -164,39 +164,41 @@ ${productContext}
     return (
         <>
             <button
-                className="ai-chat-btn"
+                className="ai-chat-btn animate-pulse-attention"
                 onClick={() => setIsOpen(!isOpen)}
                 style={{
                     position: "fixed",
-                    bottom: "20px",
-                    right: "20px",
+                    right: "5px",
                     zIndex: 1100,
-                    backgroundColor: "var(--color-primary)",
+                    backgroundColor: "rgba(59, 115, 77, 1)",
                     color: "white",
-                    border: "none",
-                    borderRadius: "50%",
-                    width: "50px",
-                    height: "50px",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    borderRadius: "50px",
+                    padding: "5px 10px",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
+                    gap: "5px",
                     cursor: "pointer",
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-                    transition: "all 0.3s ease"
+                    boxShadow: "0 4px 15px rgba(71, 141, 95, 0.4)",
+                    transition: "all 0.3s ease",
+
                 }}
             >
                 {isOpen ? (
-                    <span style={{ fontSize: "24px" }}>✕</span>
+                    <span style={{ fontSize: "1.2rem", fontWeight: "bold" }}>Ask me</span>
                 ) : (
-                    <img
-                        src="/dlogo.png"
-                        alt="Chat"
-                        style={{
-                            width: "30px",
-                            height: "30px",
-                            objectFit: "contain"
-                        }}
-                    />
+                    <>
+                        <img
+                            src="/dlogo.png"
+                            alt="Chat"
+                            style={{
+                                width: "24px",
+                                height: "24px",
+                                objectFit: "contain"
+                            }}
+                        />
+                        <span style={{ fontSize: "0.85rem", fontWeight: "600", whiteSpace: "nowrap" }}>Ask me!</span>
+                    </>
                 )}
             </button>
 

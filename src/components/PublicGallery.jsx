@@ -85,10 +85,10 @@ function PublicGallery({
                       </p>
 
                       <div className="mb-2 small">
-                        <span className="text-warning">
+                        <span className="text-warning" style={{ fontSize: '0.7rem' }}>
                           {post.ratingAvg ? Array(Math.round(post.ratingAvg)).fill("⭐").join("") : "☆☆☆☆☆"}
                         </span>
-                        <span className="text-muted ms-1 text-nowrap">
+                        <span className="text-muted ms-1 text-nowrap" style={{ fontSize: '0.7rem' }}>
                           ({post.ratingCount || 0} reviews)
                         </span>
                       </div>
