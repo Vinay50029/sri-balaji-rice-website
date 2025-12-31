@@ -65,4 +65,29 @@ This approach ensures better performance, scalability, and faster image loading.
 	•	Location: Local shop (map integrated in website)
 
 <img width="766" height="1076" alt="image" src="https://github.com/user-attachments/assets/04e08aaa-ade2-4bb1-86b1-04158aa8d99b" />
-  
+
+## Tech Stack
+
+*   **Frontend:** React 19, Vite
+*   **Backend / BaaS:** Firebase (Firestore, Hosting)
+*   **Auth:** Clerk / Firebase Auth
+*   **AI:** Google Generative AI SDK
+*   **Styling:** CSS / Tailwind (if applicable)
+*   **Deployment:** Vercel / Firebase Hosting
+
+## Getting Started
+
+1.  **Install Dependencies:**
+    ```bash
+    npm install
+    ```
+
+2.  **Run Development Server:**
+    ```bash
+    npm run dev
+    ```
+
+3.  **Build for Production:**
+    ```bash
+    npm run build
+    ```
