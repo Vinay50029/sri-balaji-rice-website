@@ -169,6 +169,7 @@ ${productContext}
                 style={{
                     position: "fixed",
                     right: "5px",
+                    bottom: "15px",
                     zIndex: 1100,
                     backgroundColor: "rgba(59, 115, 77, 1)",
                     color: "white",
