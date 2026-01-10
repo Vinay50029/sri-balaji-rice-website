@@ -8,19 +8,16 @@ The primary goal of this project is to increase sales, improve customer reach, a
 🤝 Collaboration & Contributions
 This project was collaboratively developed by two developers with clearly defined following real business requirements and customer needs.
 
-👨‍💻 Vinay Kumar 
+👨‍💻 Vinay Kumar (Vinay50029)
 
 	•	Designed and implemented the Firebase database and data structure
 	•	Implemented secure authentication for the shop owner (Father Admin)
-	•	Developed core pages:
-	      Home | cart | orders | Essentials | About
-    
-    . Built Looker Studio analytics dashboard
+	•	Developed core pages: Home | cart | orders | Essentials | About
+    •   Built Looker Studio analytics dashboard
 	•	Integrated order data with notification workflows
 	•	Implemented product listing and display logic
-	•	Partially implemented customer authentication (initial setup – 50%)
+	•	Partially implemented customer authentication (initial setup – 50)
   
-
 👨‍💻 Nikhil Kumar (nick3948)
 
 	•	Integrated Google Generative AI (Gemini API) features
@@ -32,19 +29,17 @@ This project was collaboratively developed by two developers with clearly define
 
 
 🔐 Authentication System
-
 The application uses role-based authentication:
 
-	•	Father Admin: Full access to add, edit, and delete products, prices, and images
+	•	Admin (Father) : Full access to add, edit, and delete products, prices, and images
 	•	Customers: Secure login for browsing and interacting with store content
 
 Authentication is implemented using Clerk with protected routes to prevent unauthorized access.
 
 🗄️ Database Design & Data Management
-
 The application uses Firebase Firestore for real-time data storage and management.
 
-	•	Products: Uploaded by the Father Admin with details such as name, category, price, and image URL
+	•	Products: Uploaded by the Admin with details such as name, category, price, and image URL
 	•	Users: Stores authenticated customer and admin details
 	•	Cart: Maintains user-specific cart items and quantities
 	•	Orders: Stores complete order history for customers and admin tracking
@@ -57,37 +52,14 @@ The application uses Firebase Firestore for real-time data storage and managemen
 
 This approach ensures better performance, scalability, and faster image loading.	
 
-📍 Business Information
+📊 Analytics & Monitoring
+The application includes an analytics dashboard built using Looker Studio to monitor business performance and customer activity.
+🔗 Looker Studio Dashboard: https://lookerstudio.google.com/u/0/reporting/b13b48ac-697b-406a-a510-73191d5c9b0d/page/6q2iF
 
+<img width="766" height="1076" alt="image" src="https://github.com/user-attachments/assets/04e08aaa-ade2-4bb1-86b1-04158aa8d99b" />
+
+📍 Business Information
 	•	Business Name: Sri Balaji Traders
 	•	Category: Rice & Grocery Trading
 	•	Delivery: Free delivery up to 10 km (selected areas)
 	•	Location: Local shop (map integrated in website)
-
-<img width="766" height="1076" alt="image" src="https://github.com/user-attachments/assets/04e08aaa-ade2-4bb1-86b1-04158aa8d99b" />
-
-## Tech Stack
-
-*   **Frontend:** React 19, Vite
-*   **Backend / BaaS:** Firebase (Firestore, Hosting)
-*   **Auth:** Clerk / Firebase Auth
-*   **AI:** Google Generative AI SDK
-*   **Styling:** CSS / Tailwind (if applicable)
-*   **Deployment:** Vercel / Firebase Hosting
-
-## Getting Started
-
-1.  **Install Dependencies:**
-    ```bash
-    npm install
-    ```
-
-2.  **Run Development Server:**
-    ```bash
-    npm run dev
-    ```
-
-3.  **Build for Production:**
-    ```bash
-    npm run build
-    ```
