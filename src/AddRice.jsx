@@ -11,7 +11,7 @@ function AddRice() {
   const [price, setPrice] = useState("");
   const [weight, setWeight] = useState("");
 
-  // Upload to Cloudinary
+  // uploading image to cloudinary service
   const uploadImage = async () => {
     if (!image) {
       alert("Please select an image");
@@ -37,7 +37,7 @@ function AddRice() {
     setUploading(false);
   };
 
-  // Save to Firestore
+  // saving the data to firestore database
   const saveRiceItem = async () => {
     if (!name || !price || !weight || !imageURL) {
       alert("Please fill all fields and upload image.");
@@ -54,7 +54,7 @@ function AddRice() {
 
       alert("Rice item added successfully!");
 
-      // Clear fields
+      // clearing text fields after saving
       setName("");
       setPrice("");
       setWeight("");

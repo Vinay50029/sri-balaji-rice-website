@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs, onSnapshot, orderBy, query } from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "./firebase";
 import PublicGallery from "./components/PublicGallery";
 import PostModal from "./components/PostModal";
@@ -12,11 +12,14 @@ function OtherProducts() {
 
   useEffect(() => {
     setLoading(true);
+    // getting the other products list from firebase
+    // ordering by date so new ones show first
     const q = query(
       collection(db, "otherProducts"),
       orderBy("createdAt", "desc")
     );
 
+    // real-time listener for updates
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map((docSnap) => ({
         id: docSnap.id,

@@ -166,24 +166,6 @@ ${productContext}
             <button
                 className="ai-chat-btn animate-pulse-attention"
                 onClick={() => setIsOpen(!isOpen)}
-                style={{
-                    position: "fixed",
-                    right: "5px",
-                    bottom: "15px",
-                    zIndex: 1100,
-                    backgroundColor: "rgba(59, 115, 77, 1)",
-                    color: "white",
-                    border: "1px solid rgba(255, 255, 255, 0.2)",
-                    borderRadius: "50px",
-                    padding: "5px 10px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "5px",
-                    cursor: "pointer",
-                    boxShadow: "0 4px 15px rgba(71, 141, 95, 0.4)",
-                    transition: "all 0.3s ease",
-
-                }}
             >
                 {isOpen ? (
                     <span style={{ fontSize: "1.2rem", fontWeight: "bold" }}>Ask me</span>
@@ -192,13 +174,9 @@ ${productContext}
                         <img
                             src="/dlogo.png"
                             alt="Chat"
-                            style={{
-                                width: "24px",
-                                height: "24px",
-                                objectFit: "contain"
-                            }}
+                            className="chat-icon"
                         />
-                        <span style={{ fontSize: "0.85rem", fontWeight: "600", whiteSpace: "nowrap" }}>Ask me!</span>
+                        <span className="chat-label">Ask me!</span>
                     </>
                 )}
             </button>

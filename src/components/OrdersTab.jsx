@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useRef } from "react";
 import { db } from "../firebase";
 import {
@@ -10,7 +11,9 @@ import {
     deleteDoc
 } from "firebase/firestore";
 import { ORDER_STATUS } from "../utils/constants";
+import emailjs from '@emailjs/browser';
 
+// this tab is for the admin to see all customer orders
 export default function OrdersTab() {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -19,6 +22,8 @@ export default function OrdersTab() {
     const isFirstLoad = useRef(true);
 
 
+    // this function plays a 'ding' sound when a new order comes in
+    // it uses the web audio api to generate a sine wave
     const playNotificationSound = () => {
         try {
             if (!audioContextRef.current) {
@@ -49,6 +54,8 @@ export default function OrdersTab() {
         }
     };
 
+    // fetching orders in real-time
+    // we use onSnapshot so that new orders appear instantly
     useEffect(() => {
         const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
         const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -59,6 +66,8 @@ export default function OrdersTab() {
             setOrders(fetchedOrders);
 
 
+            // if it's not the first time loading, and we see something added
+            // we calculate if it's a new order to play sound
             if (!isFirstLoad.current) {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
@@ -74,17 +83,21 @@ export default function OrdersTab() {
         return () => unsubscribe();
     }, []);
 
+    // admin changing the order status (e.g., Pending -> Accepted)
     const handleStatusUpdate = async (orderId, newStatus) => {
         try {
             await updateDoc(doc(db, "orders", orderId), { status: newStatus });
 
 
+            // getting the order details to send an email notification
             const order = orders.find(o => o.id === orderId);
             if (order && order.userInfo?.email) {
+                // getting email keys from env variables
                 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
                 const TEMPLATE_ID_CUSTOMER = import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CUSTOMER;
                 const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
+                // preparing the email data
                 const emailParams = {
                     order_id: orderId,
                     to_name: order.userInfo.name,
@@ -96,6 +109,7 @@ export default function OrdersTab() {
                     order_date: new Date().toLocaleString()
                 };
 
+                // sending the email using emailjs
                 emailjs.send(SERVICE_ID, TEMPLATE_ID_CUSTOMER, emailParams, PUBLIC_KEY)
                     .then(() => console.log("Status update email sent"))
                     .catch((err) => console.error("Failed to send status email:", err));
@@ -107,6 +121,7 @@ export default function OrdersTab() {
         }
     };
 
+    // deleting an order (only if really needed)
     const handleDeleteOrder = async (orderId) => {
         if (!window.confirm("Are you sure you want to delete this order?")) return;
         try {
@@ -116,6 +131,7 @@ export default function OrdersTab() {
         }
     };
 
+    // simple date formatter
     const formatDate = (timestamp) => {
         if (!timestamp) return "";
 
@@ -123,6 +139,7 @@ export default function OrdersTab() {
         return date.toLocaleString();
     };
 
+    // filtering orders based on the dropdown selection
     const filteredOrders = orders.filter(
         (order) => filterStatus === "all" || order.status === filterStatus
     );
@@ -199,6 +216,7 @@ export default function OrdersTab() {
                                     </div>
 
                                     <div className="d-grid gap-2">
+                                        {/* buttons to change order status */}
                                         {order.status === ORDER_STATUS.PENDING && (
                                             <button className="btn btn-sm btn-info text-white" onClick={() => handleStatusUpdate(order.id, ORDER_STATUS.ACCEPTED)}>Accept Order</button>
                                         )}
@@ -219,3 +237,4 @@ export default function OrdersTab() {
         </div>
     );
 }
+

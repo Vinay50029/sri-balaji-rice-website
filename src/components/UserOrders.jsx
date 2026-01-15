@@ -5,18 +5,21 @@ import { db } from "../firebase";
 import { collection, query, where, getDocs, updateDoc, doc, addDoc, runTransaction, serverTimestamp } from "firebase/firestore";
 import { OWNER_PHONE, ORDER_STATUS } from "../utils/constants";
 
+// this component shows the user's order history
+// it basically fetches orders where userId matches the current user
 export default function UserOrders({ user, onClose }) {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showCancelModal, setShowCancelModal] = useState(false);
     const [cancelledOrder, setCancelledOrder] = useState(null);
 
-    // Rating State
+    // states for handling product ratings
     const [ratingModalOpen, setRatingModalOpen] = useState(false);
-    const [ratingData, setRatingData] = useState(null); // { orderId, item }
+    const [ratingData, setRatingData] = useState(null); // stores which order/item is being rated
     const [ratingValue, setRatingValue] = useState(5);
     const [isSubmittingRating, setIsSubmittingRating] = useState(false);
 
+    // simple counter to force re-fetching orders when needed
     const [refreshKey, setRefreshKey] = useState(0);
 
     const handleRefresh = () => {
@@ -24,11 +27,13 @@ export default function UserOrders({ user, onClose }) {
         setRefreshKey(prev => prev + 1);
     };
 
+    // when the component loads, we fetch the orders from firestore
     useEffect(() => {
         if (!user) return;
 
         const fetchOrders = async () => {
             try {
+                // query to find orders belonging to this user
                 const q = query(
                     collection(db, "orders"),
                     where("userId", "==", user.id)
@@ -39,6 +44,7 @@ export default function UserOrders({ user, onClose }) {
                     id: doc.id,
                     ...doc.data()
                 }));
+                // sorting orders so the newest ones come first
                 userOrders.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
                 setOrders(userOrders);
@@ -52,6 +58,7 @@ export default function UserOrders({ user, onClose }) {
         fetchOrders();
     }, [user, refreshKey]);
 
+    // if user wants to cancel an order, we update the status in firebase
     const handleCancelOrder = async (order) => {
 
         try {
@@ -59,6 +66,7 @@ export default function UserOrders({ user, onClose }) {
                 status: ORDER_STATUS.CANCELLED
             });
 
+            // update the local state so the UI changes immediately
             setOrders(prev => prev.map(o =>
                 o.id === order.id ? { ...o, status: ORDER_STATUS.CANCELLED } : o
             ));
@@ -72,6 +80,7 @@ export default function UserOrders({ user, onClose }) {
         }
     };
 
+    // this opens whatsapp with a pre-filled message for cancellation
     const openWhatsAppForCancellation = () => {
         if (cancelledOrder) {
             const message = `* Cancelling Order * 🚫\n\nOrder ID: ${cancelledOrder.id} \nTotal: ₹${cancelledOrder.totalAmount} \n\nI would like to cancel this order.`;
@@ -81,36 +90,40 @@ export default function UserOrders({ user, onClose }) {
         }
     };
 
+    // preparing to rate a specific item from an order
     const handleRateItem = (order, item) => {
         setRatingData({ orderId: order.id, item });
         setRatingValue(5);
         setRatingModalOpen(true);
     };
 
+    // submitting the rating to the database
+    // this does two things: adds a review doc and updates the product's average rating
     const submitRating = async () => {
         if (!ratingData || !user) return;
         setIsSubmittingRating(true);
 
         try {
             const { item } = ratingData;
-            // 1. Add review to 'reviews' collection
+            // 1. first, we add the review to the 'reviews' collection
             await addDoc(collection(db, "reviews"), {
                 userId: user.id,
                 userName: user.firstName || "User",
-                productId: item.id || item.productId, // Fallback if id missing
+                productId: item.id || item.productId, // checking for id
                 productName: item.title,
                 rating: ratingValue,
                 createdAt: serverTimestamp(),
                 orderId: ratingData.orderId
             });
 
-            // 2. Update product stats atomically
+            // 2. then we use a transaction to safely update the product's rating stats
             await runTransaction(db, async (transaction) => {
                 let productRef = doc(db, "fatherPosts", item.id);
                 let productDoc = await transaction.get(productRef);
 
+                // checking if product exists in either collection
                 if (!productDoc.exists()) {
-                    // Try 'otherProducts' collection
+                    // if not in fatherPosts, check otherProducts
                     productRef = doc(db, "otherProducts", item.id);
                     productDoc = await transaction.get(productRef);
 
@@ -124,6 +137,7 @@ export default function UserOrders({ user, onClose }) {
                 const oldRatingCount = data.ratingCount || 0;
                 const oldRatingAvg = data.ratingAvg || 0;
 
+                // calculating the new average rating
                 const newRatingCount = oldRatingCount + 1;
                 const newRatingAvg = ((oldRatingAvg * oldRatingCount) + ratingValue) / newRatingCount;
 
@@ -145,6 +159,7 @@ export default function UserOrders({ user, onClose }) {
     };
 
 
+    // styles for the modal overlay
     const modalOverlayStyle = {
         position: "fixed",
         top: 0,
@@ -170,6 +185,7 @@ export default function UserOrders({ user, onClose }) {
         boxShadow: "0 10px 25px rgba(0,0,0,0.2)"
     };
 
+    // helper function to get color based on order status
     const getStatusColor = (status) => {
         switch (status) {
             case ORDER_STATUS.PENDING: return "warning";
@@ -194,10 +210,6 @@ export default function UserOrders({ user, onClose }) {
                             ↻
                         </button>
                     </div>
-                    {/* <div className="d-flex align-items-center gap-2">
-                        <small className="text-muted" style={{ fontSize: '0.7rem' }}>{user?.id?.slice(6, 11)}...</small>
-                        <button type="button" className="btn-close" onClick={onClose}></button>
-                    </div> */}
                 </div>
 
                 <div className="flex-grow-1 overflow-auto p-3">
@@ -207,15 +219,14 @@ export default function UserOrders({ user, onClose }) {
                             <p className="mb-0 small text-muted">Loading your orders...</p>
                         </div>
                     ) : orders.length === 0 ? (
+                        // show this if user has no orders
                         <div className="text-center p-5 text-muted bg-light rounded m-3 border border-dashed">
                             <div className="display-1 mb-3">📦</div>
                             <h6 className="fw-bold text-dark">No Orders Found</h6>
                             <p className="small mb-2">Shop Now!</p>
-                            {/* <p className="description small text-muted monospace bg-white p-1 rounded border d-inline-block">
-                                ID: {user?.id}
-                            </p> */}
                         </div>
                     ) : (
+                        // list of order cards
                         <div className="d-flex flex-column gap-3">
                             {orders.map(order => (
                                 <div key={order.id} className="card border shadow-sm">
@@ -239,7 +250,7 @@ export default function UserOrders({ user, onClose }) {
                                                         <div className="text-muted">₹{item.price * item.quantity}</div>
                                                     </div>
 
-                                                    {/* RATE BUTTON - Only if Delivered */}
+                                                    {/* we only show the rate button if the order is delivered */}
                                                     {order.status === ORDER_STATUS.DELIVERED && (
                                                         <button
                                                             className="btn btn-sm btn-outline-warning text-dark py-0"
@@ -257,6 +268,7 @@ export default function UserOrders({ user, onClose }) {
                                             <span>₹{order.totalAmount}</span>
                                         </div>
 
+                                        {/* user can only cancel if status is still pending */}
                                         {order.status === ORDER_STATUS.PENDING && (
                                             <div className="text-end">
                                                 <button
@@ -282,7 +294,7 @@ export default function UserOrders({ user, onClose }) {
                 </div>
             </div>
 
-            {/* CANCEL MODAL */}
+            {/* popup modal to confirm cancellation */}
             {showCancelModal && (
                 <div style={{
                     position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
@@ -312,7 +324,7 @@ export default function UserOrders({ user, onClose }) {
                 </div>
             )}
 
-            {/* RATING MODAL */}
+            {/* popup modal for giving a star rating */}
             {ratingModalOpen && (
                 <div style={{
                     position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
@@ -369,3 +381,4 @@ export default function UserOrders({ user, onClose }) {
         </div>
     );
 }
+

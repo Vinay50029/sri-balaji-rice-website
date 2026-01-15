@@ -6,6 +6,7 @@ function OffersSection() {
   const [offers, setOffers] = useState([]);
 
   useEffect(() => {
+    // fetching special offers from firebase
     const fetchOffers = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "offers"));
@@ -22,6 +23,7 @@ function OffersSection() {
     fetchOffers();
   }, []);
 
+  // if no offers, we just don't show this section
   if (offers.length === 0) {
     return null;
   }
@@ -35,21 +37,7 @@ function OffersSection() {
         </div>
 
         <div className="row g-4 justify-content-center">
-
-          {/* <div className="col-12 col-sm-6 col-md-4 col-lg-3">
-            <div className="sbt-card h-100" style={{ background: "linear-gradient(135deg, #fff3e0 0%, #fff8e1 100%)", border: '1px solid var(--color-secondary-light)' }}>
-              <div className="card-body text-center p-4 d-flex flex-column justify-content-center">
-                <div className="mb-3" style={{ fontSize: "3rem" }}>
-                  <span className="icon-animate">🎁</span>
-                </div>
-                <h4 className="h5 mb-2" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-primary)', fontWeight: '700' }}>Lucky Draw Offer</h4>
-                <p className="small mb-3 fw-bold" style={{ color: 'var(--color-accent)' }}>Win Silver Coins! 🥇🥈🥉</p>
-                <p className="text-muted small mb-0">
-                  Buy a <strong>26kg Rice Bag</strong> to get a coupon. Draw on 1st of every month!
-                </p>
-              </div>
-            </div>
-          </div> */}
+          {/* looping through offers and setting colors based on theme */}
           {offers.map((offer) => {
             const theme = offer.color || 'white';
             const bgStyle = theme === 'gold'
@@ -70,7 +58,6 @@ function OffersSection() {
                     <h4 className="h5 mb-3" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-primary)', fontWeight: '600' }}>{offer.title}</h4>
                     <p className="small mb-3 fw-bold" style={{ color: 'var(--color-accent)' }}>{offer.subTitle}</p>
                     <p className="text-muted mb-3">{offer.description}</p>
-                    {/* <small className="text-secondary fw-bold" style={{ cursor: 'pointer', fontSize: '0.8rem' }}>Check Details</small> */}
                   </div>
                 </div>
               </div>

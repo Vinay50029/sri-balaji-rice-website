@@ -6,6 +6,7 @@ export default function FloatingFooter({ onOpenOrders }) {
 
     return (
         <footer className="floating-footer">
+            {/* button to open shopping cart */}
             <button
                 type="button"
                 className="footer-btn"
@@ -19,6 +20,7 @@ export default function FloatingFooter({ onOpenOrders }) {
                 )}
             </button>
 
+            {/* simple whatsapp contact link */}
             <a
                 href="https://wa.me/919951037494"
                 target="_blank"
@@ -32,6 +34,7 @@ export default function FloatingFooter({ onOpenOrders }) {
                 <span>Contact</span>
             </a>
 
+            {/* login button if not signed in, else orders button */}
             <SignedOut>
                 <SignInButton mode="modal">
                     <button type="button" className="footer-btn">

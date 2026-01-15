@@ -2,6 +2,7 @@ import MediaSlider from "./MediaSlider";
 import { formatPrice } from "../utils/helpers";
 import { useCart } from "../context/CartContext";
 
+// helper to guess checks if url is video or image
 const inferTypeFromUrl = (url = "") => {
   if (url.match(/\.(mp4|mov|m4v|webm|avi|mkv)$/i)) {
     return "video";
@@ -9,6 +10,8 @@ const inferTypeFromUrl = (url = "") => {
   return "image";
 };
 
+// making a list of media to show in slider
+// puts images before videos usually
 const buildMediaList = (post) => {
   let mediaList = [];
 
@@ -98,6 +101,7 @@ function PublicGallery({
                       </p>
 
                       <div className="mt-auto">
+                        {/* check if item is in cart to show + - buttons or just add button */}
                         {(() => {
                           const cartItem = cartItems.find((item) => item.id === post.id);
                           if (cartItem) {
@@ -143,8 +147,6 @@ function PublicGallery({
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-cart-plus-fill" viewBox="0 0 16 16">
                                   <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM9 5.5V7h1.5a.5.5 0 0 1 0 1H9v1.5a.5.5 0 0 1-1 0V8H6.5a.5.5 0 0 1 0-1H8V5.5a.5.5 0 0 1 1 0z" />
                                 </svg>
-                                {/* <span className="d-none d-sm-inline">Add to Cart</span> */}
-                                {/* <span className="d-inline d-sm-none">Add</span> */}
                               </button>
                             );
                           }

@@ -32,6 +32,7 @@ export default function CartDrawer() {
     const [isSecure, setIsSecure] = useState(window.isSecureContext);
 
 
+    // fills form automatically if user is logged in
     useEffect(() => {
         if (user) {
             const fetchUserProfile = async () => {
@@ -63,6 +64,7 @@ export default function CartDrawer() {
         }
     }, [user]);
 
+    // resets location data when cart closes so it doesn't get stuck
     useEffect(() => {
         if (isCartOpen) {
             setCustomerDetails(prev => ({
@@ -79,6 +81,7 @@ export default function CartDrawer() {
         setCustomerDetails((prev) => ({ ...prev, [name]: value }));
     };
 
+    // gets user's location coordinates for delivery
     const handleGetLocation = () => {
         if (!navigator.geolocation) {
             alert("Geolocation is not supported by your browser");
@@ -111,6 +114,7 @@ export default function CartDrawer() {
 
     const [deliveryFee, setDeliveryFee] = useState(0);
 
+    // simple math to check distance
     const calculateDistance = (lat1, lon1, lat2, lon2) => {
         const R = 6371;
         const dLat = deg2rad(lat2 - lat1);
@@ -128,6 +132,7 @@ export default function CartDrawer() {
         return deg * (Math.PI / 180);
     };
 
+    // calculate fee if distance > 10km
     useEffect(() => {
         let fee = 0;
 
@@ -154,6 +159,7 @@ export default function CartDrawer() {
     const [lastOrder, setLastOrder] = useState(null);
     const [locationError, setLocationError] = useState("");
 
+    // saves order to firebase and sends email
     const finalizeOrder = async (orderData) => {
         setIsPlacingOrder(true);
         try {
@@ -233,6 +239,7 @@ export default function CartDrawer() {
     const handlePlaceOrder = async (e) => {
         e.preventDefault();
 
+        // force login before ordering
         if (!user) {
             const wantLogin = window.confirm("Please login check ordering.");
             if (wantLogin) {
@@ -250,7 +257,7 @@ export default function CartDrawer() {
             setLocationError("");
         }
 
-        // Construct readable address
+        // constructing full address text
         const fullAddress = `
 ${customerDetails.houseNo ? `H.No: ${customerDetails.houseNo}` : ''}
 ${customerDetails.street}
@@ -317,7 +324,7 @@ ${customerDetails.mapsLink ? `📍 Maps: ${customerDetails.mapsLink}` : ''}
 
 
             <div style={drawerStyle}>
-
+                {/* header */}
                 <div className="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
                     <div className="d-flex align-items-center">
                         <button
@@ -426,6 +433,7 @@ ${customerDetails.mapsLink ? `📍 Maps: ${customerDetails.mapsLink}` : ''}
                                 <span className="fw-bold fs-6">Subtotal:</span>
                                 <span className="fw-bold fs-6">₹{cartTotal}</span>
                             </div>
+                            {/* show delivery fee if far away */}
                             {deliveryFee > 0 && (
                                 <>
                                     <div className="d-flex justify-content-between mb-2">
@@ -619,6 +627,7 @@ ${customerDetails.mapsLink ? `📍 Maps: ${customerDetails.mapsLink}` : ''}
                     </div>
                 </div>
             )}
+            {/* success modal after order placed */}
             {showSuccessModal && (
                 <div style={{
                     position: "fixed", top: 0, left: 0, width: "100%", height: "100%",

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { db } from "./firebase";
 import {
   collection,
-  getDocs,
   onSnapshot,
   query,
   orderBy,
@@ -12,8 +11,8 @@ import PostModal from "./components/PostModal";
 import OffersSection from "./components/OffersSection";
 import BrandHero from "./components/BrandHero";
 
-// RICE CATEGORY SECTIONS 
-// NOTE: The "key" must match the category values used in FatherAdmin.jsx
+// getting subtitles for each rice category from constants
+// these keys must match what we use in admin panel
 import { RICE_CATEGORY_SUBTITLES } from "./utils/constants";
 
 const KNOWN_SUBTITLES = RICE_CATEGORY_SUBTITLES;
@@ -26,11 +25,13 @@ function FatherPosts({ onCategorySelect, categories = [] }) {
 
   useEffect(() => {
     setLoading(true);
+    // query to get all posts sorted by newest first
     const q = query(
       collection(db, "fatherPosts"),
       orderBy("createdAt", "desc")
     );
 
+    // listening to real-time updates from firebase
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -72,7 +73,7 @@ function FatherPosts({ onCategorySelect, categories = [] }) {
     );
   }
 
-  // Deduplicate categories based on value
+  // checking for duplicate categories to avoid showing same section twice
   const uniqueCategories = [];
   const seenValues = new Set();
   categories.forEach(cat => {
@@ -82,6 +83,8 @@ function FatherPosts({ onCategorySelect, categories = [] }) {
     }
   });
 
+  // preparing the data for each section
+  // filtering posts that belong to each category
   const sectionsToRender = uniqueCategories.map((cat) => ({
     key: cat.value,
     title: cat.label,
@@ -93,13 +96,13 @@ function FatherPosts({ onCategorySelect, categories = [] }) {
 
   return (
     <>
-      {/* BRAND HERO */}
+      {/* huge banner at the top */}
       <BrandHero />
 
-      {/* OFFERS SECTION */}
+      {/* special offers section */}
       <OffersSection />
 
-      {/* CONTRAST DIVIDER - Separating Offers from Products */}
+      {/* simple divider line to separate offers from products */}
       <div id="shop-start" style={{
         height: "4px",
         background: "linear-gradient(90deg, transparent, var(--color-primary), transparent)",
@@ -107,7 +110,7 @@ function FatherPosts({ onCategorySelect, categories = [] }) {
         opacity: 0.8
       }} />
 
-      {/* RICE CATEGORY SECTIONS */}
+      {/* showing rice products category wise */}
       {sectionsToRender.map((section, index) => (
         <div key={section.key} id={`category-${section.key}`}>
           <PublicGallery
@@ -118,7 +121,7 @@ function FatherPosts({ onCategorySelect, categories = [] }) {
             subtitle={section.subtitle}
             emptyMessage={`No ${section.title} items yet.`}
           />
-          {/* Light divider line after each section (except the last one) */}
+          {/* adding a light line between sections except after the last one */}
           {index < sectionsToRender.length - 1 && (
             <div style={{
               height: "4px",

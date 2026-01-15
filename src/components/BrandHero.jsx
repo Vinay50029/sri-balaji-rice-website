@@ -1,11 +1,14 @@
 import React from "react";
 
+// this is the big hero section at the top of home page
+// it shows our brand name and some trust badges
 export default function BrandHero() {
     return (
         <section className="position-relative overflow-hidden text-center bg-white" style={{ paddingTop: "30px", paddingBottom: "60px" }}>
             <div className="container position-relative" style={{ zIndex: 10 }}>
                 <div className="row justify-content-center">
                     <div className="col-lg-8">
+                        {/* small badge showing we are trusted */}
                         <div className="d-inline-block px-1 py-1 rounded-pill bg-light border border-secondary mb-3">
                             <span className="small fw-bold text-uppercase" style={{ letterSpacing: "1px", color: "var(--color-primary)" }}>
                                 Trusted by Many Customers • Wholesale & Retail • Customer Satisfaction
@@ -18,6 +21,7 @@ export default function BrandHero() {
                             From premium Sona Masuri and aged HMT to healthy Brown Rice and Steam varieties We bring you the finest authentic selections.
                         </p>
 
+                        {/* features list like quality, payment etc */}
                         <div className="d-flex justify-content-center gap-4 flex-wrap">
                             <div className="d-flex align-items-center gap-2">
                                 <div className="rounded-circle bg-light p-2 text-primary">
@@ -31,18 +35,6 @@ export default function BrandHero() {
                                     <small className="text-muted">Hand-picked Grain</small>
                                 </div>
                             </div>
-
-                            {/* <div className="d-flex align-items-center gap-2">
-                                <div className="rounded-circle bg-light p-2 text-primary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                        <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-4 0H.5a1.5 1.5 0 0 1-1.5-1.5v-6.5zm11 .5a.5.5 0 0 0-.5.5v2h2a.5.5 0 0 0 .5-.5V4a.5.5 0 0 0-.5-.5h-1.5zM.5 3a.5.5 0 0 0-.5.5v6.5A.5.5 0 0 0 .5 10h1a2 2 0 0 0 4 0h6a2 2 0 0 0 4 0h1a.5.5 0 0 0 .5-.5v-2.125a.5.5 0 0 0-.11-.313l-1.48-1.85A.5.5 0 0 0 13.02 5H11.5a1.5 1.5 0 0 1-1.5-1.5v-2a.5.5 0 0 0-.5-.5H1.5A.5.5 0 0 0 .5 3z" />
-                                    </svg>
-                                </div>
-                                <div className="text-start">
-                                    <h6 className="mb-0 fw-bold">Fast Delivery</h6>
-                                    <small className="text-muted">Within 24 Hours</small>
-                                </div>
-                            </div> */}
 
                             <div className="d-flex align-items-center gap-2">
                                 <div className="rounded-circle bg-light p-2 text-primary">

@@ -1,6 +1,9 @@
+
 import { useState } from "react";
 
 
+// a nice slider component to show images or videos
+// we use this in the product cards to swipe through media
 function MediaSlider({
   media = [],
   height = 240,
@@ -13,6 +16,7 @@ function MediaSlider({
   const [index, setIndex] = useState(0);
 
 
+  // if there's no media, we just show a gray box saying "No media"
   if (!media.length) {
     return (
       <div
@@ -30,11 +34,17 @@ function MediaSlider({
     );
   }
 
+  // getting the current item to show
   const current = media[index];
+
+  // handling the previous button click
+  // used e.stopPropagation() so it doesn't trigger the card click event
   const goPrev = (e) => {
     e.stopPropagation();
     setIndex((prev) => (prev === 0 ? media.length - 1 : prev - 1));
   };
+
+  // handling the next button click
   const goNext = (e) => {
     e.stopPropagation();
     setIndex((prev) => (prev === media.length - 1 ? 0 : prev + 1));
@@ -52,6 +62,7 @@ function MediaSlider({
       onClick={onClick}
     >
 
+      {/* checking if it's a video or image and rendering accordingly */}
       {current.type === "video" ? (
         <video
           src={current.url}
@@ -76,6 +87,7 @@ function MediaSlider({
         />
       )}
 
+      {/* showing navigation arrows only if there's more than 1 item */}
       {media.length > 1 && (
         <>
 
@@ -99,6 +111,7 @@ function MediaSlider({
         </>
       )}
 
+      {/* showing the little dots at the bottom to indicate position */}
       {showDots && media.length > 1 && (
         <div
           className="position-absolute bottom-0 start-50 translate-middle-x mb-2 d-flex gap-1"

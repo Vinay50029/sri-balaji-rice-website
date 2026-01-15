@@ -1,7 +1,9 @@
 import MediaSlider from "./MediaSlider";
 import { useCart } from "../context/CartContext";
 import { formatPrice } from "../utils/helpers";
+import { useEffect } from "react";
 
+// helper function to guess if url is video or image
 const inferTypeFromUrl = (url = "") => {
   if (url.match(/\.(mp4|mov|m4v|webm|avi|mkv)$/i)) {
     return "video";
@@ -9,6 +11,7 @@ const inferTypeFromUrl = (url = "") => {
   return "image";
 };
 
+// making a list of media to show in slider
 const buildMediaList = (post) => {
   let mediaList = [];
 
@@ -34,11 +37,9 @@ const buildMediaList = (post) => {
 };
 
 
-
-
-import { useEffect } from "react";
-
 function PostModal({ post, onClose }) {
+
+  // preventing page scroll when modal is open
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -53,6 +54,7 @@ function PostModal({ post, onClose }) {
 
   return (
     <div className="custom-modal-backdrop" onClick={onClose}>
+      {/* stopping click propagation so modal doesn't close when clicking inside */}
       <div
         className="custom-modal-content"
         onClick={(e) => e.stopPropagation()}
@@ -101,6 +103,7 @@ function PostModal({ post, onClose }) {
           <p className="text-muted bold-text">{post.description || "No description"}</p>
           <p className="text-muted">For more info contact 9951037494</p>
 
+          {/* cart controls: same as in gallery card */}
           {(() => {
             const cartItem = cartItems.find((item) => item.id === post.id);
             if (cartItem) {
