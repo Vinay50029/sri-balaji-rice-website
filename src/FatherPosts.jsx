@@ -12,12 +12,7 @@ import PostModal from "./components/PostModal";
 import OffersSection from "./components/OffersSection";
 import BrandHero from "./components/BrandHero";
 
-// ============================================
-// RICE CATEGORY SECTIONS - CUSTOMIZE TEXT HERE
-// ============================================
-// TO CHANGE CATEGORY TITLES: Change "title" value below (e.g., "Raw Rice" → "Premium Raw Rice")
-// TO CHANGE CATEGORY SUBTITLES: Change "subtitle" value below (the description text)
-// TO ADD/REMOVE CATEGORIES: Add or remove objects from this array
+// RICE CATEGORY SECTIONS 
 // NOTE: The "key" must match the category values used in FatherAdmin.jsx
 import { RICE_CATEGORY_SUBTITLES } from "./utils/constants";
 
@@ -98,10 +93,10 @@ function FatherPosts({ onCategorySelect, categories = [] }) {
 
   return (
     <>
-      {/* BRAND HERO - Priority 1 & 2 */}
+      {/* BRAND HERO */}
       <BrandHero />
 
-      {/* OFFERS SECTION - Priority 4 (Secondary) */}
+      {/* OFFERS SECTION */}
       <OffersSection />
 
       {/* CONTRAST DIVIDER - Separating Offers from Products */}

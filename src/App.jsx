@@ -16,6 +16,9 @@ import Navbar from "./components/Navbar";
 import FloatingFooter from "./components/FloatingFooter";
 import { INITIAL_RICE_CATEGORIES } from "./utils/constants";
 
+
+// here we are using the CartProvider to manage the cart state globally
+// so that we can access the cart items from any page
 function App() {
   return (
     <CartProvider>
@@ -24,7 +27,9 @@ function App() {
   );
 }
 
+// this is the main logic of our app where we handle routing and state
 function AppContent() {
+  // logic to check in which page we are present currently
   const [path, setPath] = useState(() => window.location.pathname);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
@@ -32,17 +37,20 @@ function AppContent() {
   const { user, setIsCartOpen, cartCount } = useCart();
 
   useEffect(() => {
+    // if we click back button in browser it should update the path
     const handlePop = () => setPath(window.location.pathname);
     window.addEventListener("popstate", handlePop);
 
-    // Fetch categories
+    // fetching the rice categories from the database
+    // if database is empty we use default categories
     const fetchCategories = async () => {
       try {
         const q = query(collection(db, "riceCategories"), orderBy("createdAt", "asc"));
         const snapshot = await getDocs(q);
         if (!snapshot.empty) {
           const fetchedCats = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          // Deduplicate
+
+          // here we are removing duplicates if any category is repeated
           const uniqueCats = [];
           const seenValues = new Set();
           fetchedCats.forEach(cat => {
@@ -53,7 +61,7 @@ function AppContent() {
           });
           setCategories(uniqueCats);
         } else {
-          // Fallback to initial if empty (though Admin should have seeded it)
+          // if nothing is in database we use the initial ones
           setCategories(INITIAL_RICE_CATEGORIES);
         }
       } catch (error) {
@@ -66,6 +74,7 @@ function AppContent() {
     return () => window.removeEventListener("popstate", handlePop);
   }, []);
 
+  // function to change the page without reloading
   const navigate = (newPath) => {
     setShowOrders(false);
     setIsCartOpen(false);
@@ -74,6 +83,7 @@ function AppContent() {
     setPath(newPath);
   };
 
+  // when we select a category it scrolls to that position
   const handleCategorySelect = (categoryValue) => {
     setShowOrders(false);
     setIsCartOpen(false);
@@ -87,10 +97,12 @@ function AppContent() {
     }
   };
 
+  // checking if the path is admin panel
   if (path === "/father-admin") {
     return <FatherAdmin />;
   }
 
+  // checking which page to show based on the path
   let content;
   if (path === "/other-products") {
     content = <OtherProducts />;

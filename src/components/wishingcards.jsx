@@ -11,14 +11,14 @@ const Wishes = () => {
             const month = now.getMonth(); // 0-indexed (0 is January)
             const date = now.getDate();
 
-            // Check if it is January 1st, 2026
+            // here we have to customize the date and month and year according to the requirement
             if (year === 2026 && month === 0 && date === 1) {
-                // Check if already shown in this session
+                // if the user has already seen the card in this session then it will not show the card
                 const hasShownInSession = sessionStorage.getItem('hasSeenWishes');
 
                 if (!hasShownInSession) {
                     setIsVisible(true);
-                    // Mark as shown for this session
+                    // to show the card once per opening the page will place true in session storage after completion of the present session only again the card will popup
                     sessionStorage.setItem('hasSeenWishes', 'true');
                 }
             } else {
@@ -27,7 +27,7 @@ const Wishes = () => {
         };
 
         checkDate();
-        // Optional: Set up an interval to check every minute if we want it to auto-disappear at midnight while open
+        // if we want to show the card for a specific time period then we have to set the interval
         const interval = setInterval(checkDate, 60000);
 
         return () => clearInterval(interval);

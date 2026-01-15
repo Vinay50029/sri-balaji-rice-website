@@ -210,10 +210,10 @@ export default function UserOrders({ user, onClose }) {
                         <div className="text-center p-5 text-muted bg-light rounded m-3 border border-dashed">
                             <div className="display-1 mb-3">📦</div>
                             <h6 className="fw-bold text-dark">No Orders Found</h6>
-                            <p className="small mb-2">We couldn't find any orders linked to your account.</p>
-                            <p className="description small text-muted monospace bg-white p-1 rounded border d-inline-block">
+                            <p className="small mb-2">Shop Now!</p>
+                            {/* <p className="description small text-muted monospace bg-white p-1 rounded border d-inline-block">
                                 ID: {user?.id}
-                            </p>
+                            </p> */}
                         </div>
                     ) : (
                         <div className="d-flex flex-column gap-3">

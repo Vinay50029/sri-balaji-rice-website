@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 
+// top navigation bar for our app
+// it has logo, categories dropdown and other links
 export default function Navbar({ path, navigate, categories, onCategorySelect }) {
+    // state to check if dropdown is open or closed
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -8,9 +11,12 @@ export default function Navbar({ path, navigate, categories, onCategorySelect })
         navigate(newPath);
     };
 
+    // logic for handling category click
+    // if we are not on home page, it first goes to home page and then scrolls to the category
     const handleCategoryClick = (catValue) => {
         if (navigate && path !== "/") {
             navigate("/");
+            // wait for a bit so the home page loads completely
             setTimeout(() => onCategorySelect(catValue), 100);
         } else {
             onCategorySelect(catValue);
@@ -18,7 +24,7 @@ export default function Navbar({ path, navigate, categories, onCategorySelect })
         setIsDropdownOpen(false);
     };
 
-    // Close dropdown when clicking outside
+    // if we click anywhere outside the dropdown it should close
     useEffect(() => {
         function handleClickOutside(event) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -36,7 +42,7 @@ export default function Navbar({ path, navigate, categories, onCategorySelect })
         <header className="sbt-glass sticky-top" style={{ zIndex: 1100 }}>
             <div className="sbt-container py-2">
                 <div className="d-flex flex-column flex-md-row align-items-center justify-content-between gap-2 gap-md-3">
-                    {/* Brand Logo & Name */}
+                    {/* brand logo and name */}
                     <div
                         className="d-flex align-items-center gap-2"
                         style={{ cursor: "pointer" }}
@@ -57,12 +63,12 @@ export default function Navbar({ path, navigate, categories, onCategorySelect })
                         </h1>
                     </div>
 
-                    {/* Navigation Items */}
+                    {/* navigation items like buttons and dropdowns */}
                     <div
                         className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-end gap-2 w-100 w-md-auto pb-1 pb-md-0"
                     >
 
-                        {/* Categories Dropdown */}
+                        {/* categories dropdown menu */}
                         <div
                             className="position-relative"
                             ref={dropdownRef}
@@ -133,7 +139,7 @@ export default function Navbar({ path, navigate, categories, onCategorySelect })
                             )}
                         </div>
 
-                        {/* Direct Links */}
+                        {/* direct links section */}
                         <button
                             type="button"
                             className={`btn btn-sm ${path === "/other-products" ? "btn-accent" : "btn-outline-primary"}`}

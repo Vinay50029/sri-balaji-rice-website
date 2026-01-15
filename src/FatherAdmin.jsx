@@ -25,89 +25,85 @@ import {
   ADMIN_COLLECTIONS,
   INITIAL_RICE_CATEGORIES
 } from "./utils/constants";
-// ... (imports)
 
-// TODO: Replace this with your father's real Firebase Auth UID
-// After creating the account in Firebase Authentication, copy the UID and paste below.
-// const FATHER_UID = "lvWMnEjk3bcFMOWuaa7DWdhkLWb2";
-
+// configuration constants
 const COLLECTIONS = ADMIN_COLLECTIONS;
 
-// const INITIAL_RICE_CATEGORIES = [
-//   { value: "raw", label: "Sona Masuri raw Rice" },
-//   { value: "new", label: "JSR Rice" },
-//   { value: "old", label: "HMT Rice" },
-//   { value: "steam", label: "Single Polish Rice" },
-//   { value: "broken", label: "Lachkari Kolam Rice" },
-//   { value: "brown", label: "Brown Rice" },
-//   { value: "Premium", label: "Premium Rice" },
-// ];
-
-// ============================================
-// FORM INPUT STYLES - CUSTOMIZE COLORS & SIZES HERE
-// ============================================
+// styles for the admin panel input fields
 const inputStyle = {
   width: "100%",
-  padding: "10px 12px", // TO CHANGE INPUT PADDING: Change these values
-  borderRadius: 10, // TO CHANGE INPUT CORNER RADIUS: Change this value (e.g., 8, 12, 16)
-  border: "1px solid #d0d5dd", // TO CHANGE INPUT BORDER COLOR: Change this hex color
-  fontSize: 14, // TO CHANGE INPUT TEXT SIZE: Change this value (e.g., 12, 16, 18)
+  padding: "10px 12px",
+  borderRadius: 10,
+  border: "1px solid #d0d5dd",
+  fontSize: 14,
   outline: "none",
 };
 
+// style for the bigger text box
 const textareaStyle = {
   ...inputStyle,
-  minHeight: 120, // TO CHANGE TEXTAREA HEIGHT: Change this value (in pixels)
+  minHeight: 120,
   resize: "vertical",
 };
 
-// FORM CARD STYLE (currently not used, but kept for reference)
+// styling for the form card
 const formCardStyle = {
-  background: "#fff", // TO CHANGE FORM BACKGROUND: Change this hex color
-  borderRadius: 16, // TO CHANGE FORM CORNER RADIUS: Change this value
-  border: "1px solid #e4e7ec", // TO CHANGE FORM BORDER COLOR: Change this hex color
-  padding: 20, // TO CHANGE FORM PADDING: Change this value
-  boxShadow: "0 10px 35px rgba(15, 23, 42, 0.08)", // TO CHANGE FORM SHADOW: Modify this value
-  maxWidth: 800, // TO CHANGE FORM MAX WIDTH: Change this value (in pixels)
+  background: "#fff",
+  borderRadius: 16,
+  border: "1px solid #e4e7ec",
+  padding: 20,
+  boxShadow: "0 10px 35px rgba(15, 23, 42, 0.08)",
+  maxWidth: 800,
 };
 
-// CATEGORY CHIP/BADGE STYLE - Used to display category tags
+// styling for the category badges
 const chipStyle = {
   display: "inline-flex",
   alignItems: "center",
   gap: 6,
-  fontSize: 12, // TO CHANGE CHIP TEXT SIZE: Change this value
-  borderRadius: 999, // TO CHANGE CHIP CORNER RADIUS: Change this value (999 = fully rounded)
-  padding: "4px 12px", // TO CHANGE CHIP PADDING: Change these values
-  background: "#e7f1ff", // TO CHANGE CHIP BACKGROUND COLOR: Change this hex color (light blue)
-  color: "#0d6efd", // TO CHANGE CHIP TEXT COLOR: Change this hex color (blue)
-  fontWeight: 600, // TO CHANGE CHIP TEXT WEIGHT: Change to 400 (normal) or 700 (bold)
+  fontSize: 12,
+  borderRadius: 999,
+  padding: "4px 12px",
+  background: "#e7f1ff",
+  color: "#0d6efd",
+  fontWeight: 600,
 };
 
+// this is the admin panel where we can manage all the products and orders
 function FatherAdmin() {
+  // authentication state to check if user is logged in
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [authError, setAuthError] = useState("");
 
+  // state for handling form data and file uploads
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [mediaItems, setMediaItems] = useState([]);
+
+  // common fields for all posts
   const [title, setTitle] = useState("");
-  const [subTitle, setSubTitle] = useState("");
   const [description, setDescription] = useState("");
+
+  // fields specific for rice products
   const [price, setPrice] = useState("");
   const [weight, setWeight] = useState("");
   const [category, setCategory] = useState("");
+
+  // fields specific for offers
+  const [subTitle, setSubTitle] = useState("");
   const [icon, setIcon] = useState("🎁");
   const [color, setColor] = useState("success");
+
+  // state variables for managing admin logic
   const [editingPostId, setEditingPostId] = useState(null);
-  const [collectionKey, setCollectionKey] = useState("fatherPosts");
+  const [collectionKey, setCollectionKey] = useState("fatherPosts"); // this tells which tab is currently active
   const [posts, setPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [postsError, setPostsError] = useState("");
 
-  // Dynamic Categories State
+  // state for managing categories
   const [categories, setCategories] = useState([]);
   const [newCategoryLabel, setNewCategoryLabel] = useState("");
   const [showCategoryManager, setShowCategoryManager] = useState(false);
@@ -116,13 +112,15 @@ function FatherAdmin() {
     fetchCategories();
   }, []);
 
+  // fetching the categories from database
+  // if database is empty then we add some default categories
   const fetchCategories = async () => {
     try {
       const q = query(collection(db, "riceCategories"), orderBy("createdAt", "asc"));
       const snapshot = await getDocs(q);
 
       if (snapshot.empty) {
-        // Seed initial categories if empty
+        // if no categories found, we add the initial ones
         console.log("Seeding initial categories...");
         const batch = writeBatch(db);
         INITIAL_RICE_CATEGORIES.forEach((cat) => {
@@ -133,7 +131,7 @@ function FatherAdmin() {
           });
         });
         await batch.commit();
-        // Fetch again after seeding
+        // after adding we fetch them again
         const newQ = query(collection(db, "riceCategories"), orderBy("createdAt", "asc"));
         const newSnapshot = await getDocs(newQ);
         const newCats = newSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -142,7 +140,7 @@ function FatherAdmin() {
       } else {
         const cats = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        // Deduplicate categories based on value
+        // duplicate check to make sure one category appears only once
         const uniqueCats = [];
         const seenValues = new Set();
         cats.forEach(cat => {
@@ -153,6 +151,7 @@ function FatherAdmin() {
         });
 
         setCategories(uniqueCats);
+        // setting the first category as default selected one
         if (uniqueCats.length > 0 && !category) setCategory(uniqueCats[0].value);
       }
     } catch (error) {
@@ -160,12 +159,13 @@ function FatherAdmin() {
     }
   };
 
+  // function to add a new category to the list
   const handleAddCategory = async () => {
     if (!newCategoryLabel.trim()) return;
 
     try {
       const value = newCategoryLabel.toLowerCase().trim().replace(/\s+/g, "_");
-      // Check if already exists
+      // checking if category with same name already exists
       if (categories.some(c => c.value === value)) {
         alert("Category already exists!");
         return;
@@ -186,6 +186,8 @@ function FatherAdmin() {
     }
   };
 
+  // function to delete a category
+  // note: products in this category will not be deleted
   const handleDeleteCategory = async (catId) => {
     if (!window.confirm("Are you sure you want to delete this category? Products in this category will remain but may appear uncategorized.")) return;
 
@@ -198,6 +200,7 @@ function FatherAdmin() {
     }
   };
 
+  // checking authentication state change
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -205,6 +208,7 @@ function FatherAdmin() {
     return () => unsub();
   }, []);
 
+  // fetching posts when user is logged in
   useEffect(() => {
     if (!user) {
       setPosts([]);
@@ -214,6 +218,7 @@ function FatherAdmin() {
     fetchPosts(collectionKey);
   }, [user, collectionKey]);
 
+  // helper function to get posts based on the tab selected
   const fetchPosts = async (targetCollection = collectionKey) => {
     setLoadingPosts(true);
     setPostsError("");
@@ -251,11 +256,13 @@ function FatherAdmin() {
     await signOut(auth);
   };
 
+  // logic for selecting files from computer
   const handleFileSelection = (event) => {
     const files = Array.from(event.target.files || []);
     setSelectedFiles(files);
   };
 
+  // uploading the selected files to cloudinary platform
   const uploadSelectedFiles = async () => {
     if (!selectedFiles.length) {
       alert("Please choose at least one image or video.");
@@ -270,7 +277,7 @@ function FatherAdmin() {
       for (const file of selectedFiles) {
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("upload_preset", "unsigned_preset"); // same preset you already use
+        formData.append("upload_preset", "unsigned_preset"); // this value should be same as in cloudinary settings
 
         const res = await axios.post(
           "https://api.cloudinary.com/v1_1/duegljml6/auto/upload",
@@ -299,9 +306,11 @@ function FatherAdmin() {
     setMediaItems((prev) => prev.filter((_, index) => index !== indexToRemove));
   };
 
+  // saving the post or update the post in database
   const savePost = async () => {
     const isOffers = collectionKey === "offers";
 
+    // validating if all fields are filled
     if (isOffers) {
       if (!title || !description || !icon || !color) {
         alert("Please fill all fields for the offer.");
@@ -343,12 +352,14 @@ function FatherAdmin() {
 
     try {
       if (editingPostId) {
+        // if we are editing an existing post
         await updateDoc(doc(db, collectionKey, editingPostId), {
           ...payload,
           updatedAt: serverTimestamp(),
         });
         alert("Post updated successfully!");
       } else {
+        // if we are creating a new post
         await addDoc(collection(db, collectionKey), {
           ...payload,
           createdAt: serverTimestamp(),
@@ -357,6 +368,7 @@ function FatherAdmin() {
         alert("Post added successfully!");
       }
 
+      // clearing all fields after saving
       setTitle("");
       setSubTitle("");
       setDescription("");
@@ -375,6 +387,7 @@ function FatherAdmin() {
     }
   };
 
+  // function to delete a post
   const deletePost = async (postId) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this post?"
@@ -391,6 +404,7 @@ function FatherAdmin() {
     }
   };
 
+  // filling the form with data when we click edit button
   const startEditingPost = (post) => {
     setEditingPostId(post.id);
     setTitle(post.title || "");
@@ -400,6 +414,8 @@ function FatherAdmin() {
       post.price !== undefined && post.price !== null ? String(post.price) : ""
     );
     setWeight(post.weight || "");
+
+    // ensuring media is in correct format
     setMediaItems(
       Array.isArray(post.media) && post.media.length > 0
         ? post.media
@@ -478,7 +494,7 @@ function FatherAdmin() {
     );
   }
 
-  // Logged in but not father
+  // Logged in but not Admin
   if (!isFather) {
     return (
       <div style={{ padding: 20 }}>
@@ -489,7 +505,7 @@ function FatherAdmin() {
     );
   }
 
-  // Father view
+  // Admin view
   return (
     <div style={{ padding: "12px 16px" }} className="container-fluid px-2 px-md-4">
       <div style={{ display: "flex", justifyContent: "space-between" }}>

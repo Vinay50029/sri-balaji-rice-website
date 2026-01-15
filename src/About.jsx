@@ -1,15 +1,13 @@
-// ============================================
-// ABOUT PAGE - REDESIGNED
-// ============================================
-
+// this is the about us page where we show business details
+// we have hero section, features, story, map and social links
 function About() {
-  // Google Maps embed URL
+  // address for the google map embed
   const mapAddress = "1-19/78/43, Aditya Nagar Road, Netaji Nagar, Kapra, Hyderabad, 500062, Telangana";
   const mapUrl = `https://www.google.com/maps?q=${encodeURIComponent(mapAddress)}&output=embed`;
 
   return (
     <div className="bg-light min-vh-100 font-sans">
-      {/* 1. HERO SECTION */}
+      {/* hero section - main branding area */}
       <div
         className="position-relative text-center text-white py-5 mb-5"
         style={{
@@ -22,19 +20,11 @@ function About() {
           <p className="lead fs-4 opacity-75">
             Premium Quality Rice for Every Household
           </p>
-          {/* <div className="d-inline-flex gap-3 mt-4">
-            <span className="badge bg-light text-success px-3 py-2 rounded-pill fw-semibold">
-              <i className="bi bi-shop me-2"></i>Since 1994
-            </span>
-            <span className="badge bg-light text-success px-3 py-2 rounded-pill fw-semibold">
-              <i className="bi bi-geo-alt-fill me-2"></i>Kapra, Hyderabad
-            </span>
-          </div> */}
         </div>
       </div>
 
       <div className="container pb-5">
-        {/* 2. OUR PILLARS (Cards) */}
+        {/* key features cards - showing why we are best */}
         <div className="row g-4 mb-5 justify-content-center">
           {[
             {
@@ -56,10 +46,9 @@ function About() {
             <div className="col-md-4" key={idx}>
               <div className="card h-100 border-0 shadow-sm text-center p-4 hover-lift" style={{ transition: "transform 0.2s" }}>
                 <div className="mb-3 text-success">
-                  {/* Using standard Bootstrap Icons classes - ensure you have BI imported or SVGs */}
+                  {/* using svg icons for better quality */}
                   <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" className={`bi ${item.icon}`} viewBox="0 0 16 16">
-                    {/* Dynamic Icon paths could go here, but for simplicity using generic shapes or rely on class if BI library is loaded. 
-                         Since index.css might not have BI, let's use explicit SVGs for safety below. */}
+                    {/* drawing the icons based on the type */}
                     {item.icon === "bi-shield-check" && <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56zM10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z" />}
                     {item.icon === "bi-tag-fill" && <path d="M2 1a1 1 0 0 0-1 1v4.586a1 1 0 0 0 .293.707l7 7a1 1 0 0 0 1.414 0l4.586-4.586a1 1 0 0 0 0-1.414l-7-7A1 1 0 0 0 6.586 1H2zm4 3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />}
                     {item.icon === "bi-people-fill" && <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />}
@@ -72,9 +61,9 @@ function About() {
           ))}
         </div>
 
-        {/* 3. ABOUT CONTENT & MAP GRID */}
+        {/* main content and map grid */}
         <div className="row g-5 align-items-start mb-5">
-          {/* LEFT: CONTENT & CONTACT */}
+          {/* left side: our story and contact info */}
           <div className="col-lg-6">
             <div className="mb-5">
               <h2 className="fw-bold mb-3 text-dark">Our Story</h2>
@@ -86,7 +75,7 @@ function About() {
               </p>
             </div>
 
-            {/* Contact Details Block */}
+            {/* contact details card */}
             <div className="card border-0 bg-white shadow-sm p-4 rounded-3">
               <h3 className="h5 fw-bold mb-4 border-bottom pb-2">Visit Our Store</h3>
 
@@ -119,7 +108,7 @@ function About() {
             </div>
           </div>
 
-          {/* RIGHT: MAP */}
+          {/* right side: google map */}
           <div className="col-lg-6">
             <div className="card border-0 shadow-sm overflow-hidden rounded-3 h-100" style={{ minHeight: "400px" }}>
               <iframe
@@ -136,7 +125,7 @@ function About() {
           </div>
         </div>
 
-        {/* 4. SOCIAL CONNECT */}
+        {/* social media links section */}
         <div className="text-center pt-4 border-top">
           <p className="text-muted mb-3 fw-semibold">Connect with us on Social Media</p>
           <div className="d-flex gap-3 justify-content-center">
@@ -161,7 +150,7 @@ function About() {
 
       </div>
 
-      {/* Inline styles for hover effects if not present in CSS */}
+      {/* adding hover animation styles */}
       <style>{`
         .hover-lift:hover { transform: translateY(-5px); }
         .hover-scale:hover { transform: scale(1.1); transition: transform 0.2s; }
